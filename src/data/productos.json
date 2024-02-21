@@ -1,0 +1,99 @@
+[
+	{
+		"id": "1ca04db6-6912-4f0f-86cc-7b0de344e36d",
+		"title": "Smartphone X",
+		"description": "Un potente smartphone con cámara de alta resolución y pantalla OLED.",
+		"price": 599.99,
+		"thumbnail": [
+			"https://example.com/product1-thumbnail.jpg"
+		],
+		"code": "SPX001",
+		"stock": 50
+	},
+	{
+		"id": "fd8b4290-0a14-4bf7-8dc7-7b05bb7378d6",
+		"title": "Auriculares Inalámbricos Z",
+		"description": "Auriculares inalámbricos con cancelación de ruido y batería de larga duración.",
+		"price": 149.99,
+		"thumbnail": [
+			"https://example.com/product3-thumbnail.jpg"
+		],
+		"code": "AIZ003",
+		"stock": 100
+	},
+	{
+		"id": "1ebd8b05-d93b-4c55-863d-20946a33cf18",
+		"title": "Smart TV HD",
+		"description": "Televisor de alta definición con pantalla LED de 50 pulgadas y acceso a aplicaciones.",
+		"price": 449.99,
+		"thumbnail": [
+			"https://example.com/product4-thumbnail.jpg"
+		],
+		"code": "TVHD004",
+		"stock": 20
+	},
+	{
+		"id": "8246aa17-c812-4398-a89a-d923346b4832",
+		"title": "Consola de Videojuegos A",
+		"description": "Consola de última generación con gráficos de alta resolución y almacenamiento ampliable.",
+		"price": 399.99,
+		"thumbnail": [
+			"https://example.com/product5-thumbnail.jpg"
+		],
+		"code": "CVA005",
+		"stock": 15
+	},
+	{
+		"id": "0c881adf-8816-484a-8313-909179aed7eb",
+		"title": "Cámara DSLR B",
+		"description": "Cámara réflex digital con sensor de 24 megapíxeles y grabación de video en 4K.",
+		"price": 799.99,
+		"thumbnail": [],
+		"code": "DSLRB006",
+		"stock": 10
+	},
+	{
+		"id": "1fb886a7-efae-4443-896e-add3c541d669",
+		"title": "Impresora Multifunción C",
+		"description": "Impresora multifunción con escáner integrado y conectividad Wi-Fi.",
+		"price": 199.99,
+		"thumbnail": [
+			"https://example.com/product7-thumbnail.jpg"
+		],
+		"code": "IMC007",
+		"stock": 25
+	},
+	{
+		"id": "f89b5205-9e2a-4be2-a2cf-f698e5f3c5aa",
+		"title": "Altavoces Bluetooth D",
+		"description": "Altavoces portátiles con sonido envolvente y resistencia al agua.",
+		"price": 79.99,
+		"thumbnail": [
+			"https://example.com/product8-thumbnail.jpg"
+		],
+		"code": "ABD008",
+		"stock": 50
+	},
+	{
+		"id": "321e5401-9e07-49af-ae05-f63cc27d144e",
+		"title": "Teclado Gaming E",
+		"description": "Teclado mecánico para gaming con retroiluminación RGB y teclas programables.",
+		"price": 129.99,
+		"thumbnail": [
+			"https://example.com/product9-thumbnail.jpg"
+		],
+		"code": "TGE009",
+		"stock": 40
+	},
+	{
+		"id": "eae4011a-fa57-4b9b-9ef1-6299233cbee2",
+		"title": "Ratón Inalámbrico F",
+		"description": "Ratón inalámbrico ergonómico con sensor de alta precisión y batería recargable.",
+		"price": 49.99,
+		"thumbnail": [
+			"https://example.com/product10-thumbnail.jpg"
+		],
+		"code": "RIF010",
+		"stock": 60
+	}
+]
