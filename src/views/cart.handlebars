@@ -1,0 +1,13 @@
+<div>
+    <h1>Carrito</h1>
+    {{#each response.products}}
+        <ul>
+            <li style="list-style: none; margin-bottom: 10px; border: 1px solid; padding: 1rem">
+                <h2 style="text-align: center;">{{this.product.title}}</h2>
+                <p>Precio: ${{this.product.price}}</p>
+                <p>Cantidad: {{this.quantity}}</p>
+
+            </li>
+        </ul>
+    {{/each}}
+</div>

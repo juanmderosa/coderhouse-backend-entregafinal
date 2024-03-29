@@ -1,31 +1,41 @@
 import { Router } from "express";
-import { productManager } from "../class/productManager.js";
+import { productManager } from "../dao/services/productManager.js";
 
 export const productRouter = Router();
 
 productRouter.get("/", async (req, res) => {
-  const allProducts = await productManager.getProducts();
-  const limit = parseInt(req.query.limit);
   try {
-    if (allProducts.length === 0) return res.send("No hay productos");
-    if (!limit) {
-      res.send(allProducts);
-    } else {
-      const limitedProducts = allProducts.slice(0, limit);
-      res.json(limitedProducts);
-    }
+    let page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+    let queryParam = req.query.query;
+    let sortParam = req.query.sort;
+
+    if (!page) page = 1;
+    if (!limit) limit = 6;
+    if (!queryParam) queryParam = "";
+    if (!sortParam) sortParam = "desc";
+
+    const response = await productManager.getProducts(
+      page,
+      limit,
+      queryParam,
+      sortParam
+    );
+
+    res.json(response);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 productRouter.get("/:pid", async (req, res) => {
-  let id = req.params.pid;
+  let { pid } = req.params;
+  console.log(pid);
   try {
-    const allProducts = await productManager.getProducts();
-    let data = allProducts.find((product) => product.id == id);
-    if (!data) return res.send({ error: "Producto no encontrado" });
-    res.json(data);
+    const product = await productManager.getProductsById(pid);
+    if (!product) return res.send({ error: "Producto no encontrado" });
+    res.json(product);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
