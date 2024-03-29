@@ -5,7 +5,7 @@ class ProductManager {
   async getProducts(page, limit, queryParam, sortParam) {
     try {
       let pageNumber = parseInt(page) || 1;
-      let limitNumber = parseInt(limit) || 6;
+      let limitNumber = parseInt(limit) || 10;
       let query = {};
       let sort = {};
 

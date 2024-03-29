@@ -46,14 +46,15 @@ class CartManager {
   async addProductsToCart(id, productId, quantity) {
     const cart = await cartsModel.findById(id);
     console.log(cart);
-    const product = cart.products.find(
-      (product) => product._id.toString() === productId.toString()
+
+    const productIndex = cart.products.findIndex(
+      (item) => item.product._id.toString() === productId.toString()
     );
 
-    if (product) {
-      product.quantity += quantity;
-    } else {
+    if (productIndex === -1) {
       cart.products.push({ product: productId, quantity });
+    } else {
+      throw new Error("Product already exists in cart");
     }
 
     return await cart.save();
@@ -73,6 +74,35 @@ class CartManager {
       }
       cart.products[productIndex].quantity = quantity;
       await cart.save();
+      return cart;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateCartWithProducts(cid, newProducts) {
+    try {
+      const cart = await cartsModel.findById(cid);
+
+      if (!cart) {
+        throw new Error("Cart not found");
+      }
+
+      for (const newProduct of newProducts) {
+        const existingProductIndex = cart.products.findIndex(
+          (item) =>
+            item.product._id.toString() === newProduct.product.toString()
+        );
+
+        if (existingProductIndex !== -1) {
+          cart.products[existingProductIndex].quantity += newProduct.quantity;
+        } else {
+          cart.products.push(newProduct);
+        }
+      }
+
+      await cart.save();
+
       return cart;
     } catch (error) {
       throw error;

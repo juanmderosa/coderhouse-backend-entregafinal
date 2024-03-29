@@ -72,3 +72,15 @@ cartRouter.put("/:cid/products/:pid", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+cartRouter.put("/:cid", async (req, res) => {
+  const { cid } = req.params;
+  const { products } = req.body;
+
+  try {
+    const updatedCart = await cartManager.updateCartWithProducts(cid, products);
+    res.json({ status: "success", cart: updatedCart });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});

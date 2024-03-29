@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
     let sortParam = req.query.sort;
 
     if (!page) page = 1;
-    if (!limit) limit = 6;
+    if (!limit) limit = 10;
     if (!queryParam) queryParam = "";
     if (!sortParam) sortParam = "desc";
 
@@ -56,7 +56,7 @@ router.get("/realtimeproducts", async (req, res) => {
     let sortParam = req.query.sort;
 
     if (!page) page = 1;
-    if (!limit) limit = 6;
+    if (!limit) limit = 10;
     if (!queryParam) queryParam = "";
     if (!sortParam) sortParam = "desc";
 
