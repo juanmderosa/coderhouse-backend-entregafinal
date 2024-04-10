@@ -4,26 +4,22 @@ import { cartRouter } from "./routes/cartRoutes.js";
 import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
-import viewRouter from "./routes/views.router.js";
+import viewRouter from "./routes/viewsRouter.js";
 import mongoose from "mongoose";
 import { productManager } from "./dao/services/productManager.js";
+import viewsRouter from "./routes/viewsRouter.js";
+import sessionsRouter from "./routes/sessionsRouter.js";
+import MongoStore from "connect-mongo";
+import session from "express-session";
 
 const PORT = process.env.PORT | 8080;
 const app = express();
-//Middlewares
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static(__dirname + "/public"));
-app.set("views", __dirname + "/views");
-app.set("view engine", "handlebars");
-app.engine("handlebars", handlebars.engine());
-app.use(viewRouter);
+const DBURL =
+  "mongodb+srv://juanmderosa:sGD3FNfTmzJ0dlNS@cluster0.mo9zqch.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 const connectMongoDB = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://juanmderosa:sGD3FNfTmzJ0dlNS@cluster0.mo9zqch.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-    );
+    await mongoose.connect(DBURL);
     console.log("Conectado con MongoDB");
   } catch (error) {
     console.log(error);
@@ -32,6 +28,26 @@ const connectMongoDB = async () => {
 };
 
 connectMongoDB();
+
+//Middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(__dirname + "/public"));
+app.use(
+  session({
+    store: new MongoStore({
+      mongoUrl: DBURL,
+      ttl: 3600,
+    }),
+    secret: "Secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.set("views", __dirname + "/views");
+app.set("view engine", "handlebars");
+app.engine("handlebars", handlebars.engine());
+app.use(viewRouter);
 
 //Listen
 const server = app.listen(PORT, () => {
@@ -43,6 +59,8 @@ const io = new Server(server);
 //Routes
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+app.use("/", viewsRouter);
+app.use("/api/sessions", sessionsRouter);
 
 io.removeAllListeners();
 io.on("connection", async (socket) => {

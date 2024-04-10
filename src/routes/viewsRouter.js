@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { productManager } from "../dao/services/productManager.js";
 import { cartManager } from "../dao/services/cartManager.js";
+import { auth } from "../dao/middlewares/auth.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     let page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
@@ -23,7 +24,18 @@ router.get("/", async (req, res) => {
       sortParam
     );
 
-    res.render("products", response);
+    res.render("products", {
+      products: response.payload,
+      user: req.session.user,
+      totalPages: response.totalPages,
+      prevPage: response.prevPage,
+      nextPage: response.nextPage,
+      page: response.page,
+      hasPrevPage: response.hasPrevPage,
+      hasNextPage: response.hasNextPage,
+      prevLink: response.prevLink,
+      nextLink: response.nextLink,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -72,6 +84,20 @@ router.get("/realtimeproducts", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+router.get("/register", (req, res) => {
+  res.render("register");
+});
+
+router.get("/login", (req, res) => {
+  res.render("login");
+});
+
+router.get("/profile", auth, (req, res) => {
+  res.render("profile", {
+    user: req.session.user,
+  });
 });
 
 export default router;

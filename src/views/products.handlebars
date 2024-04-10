@@ -1,7 +1,8 @@
 <div>
+    <p>Bienvenido, {{user.name}}!</p><p>Role:{{user.role}}</p><p>E-mail:{{user.email}}</p><p>Age:{{user.age}}</p>
     <h1 style="text-align: center;">Products</h1>
     <ul>
-        {{#each payload}}
+        {{#each products}}
             <li style="list-style: none; margin-bottom: 10px; border: 1px solid; padding: 1rem">
                 <h2>{{this.title}}</h2>
                 <p>${{this.price}}</p>
