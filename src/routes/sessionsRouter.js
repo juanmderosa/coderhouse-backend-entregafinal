@@ -1,9 +1,23 @@
 import { Router } from "express";
 import userModel from "../dao/models/users.js";
 import { createHash, isValidPassword } from "../utils.js";
+import passport from "passport";
 const router = Router();
 
-router.post("/register", async (req, res) => {
+router.post(
+  "/register",
+  passport.authenticate("register", { failureRedirect: "/failregister" }),
+  async (req, res) => {
+    res.status(201).send({ status: "success", message: "Usuario registrado" });
+  }
+);
+
+router.get("/failregister", async (req, res) => {
+  console.log("error");
+  res.send({ error: "Falló" });
+});
+//! MANEJO DE REGISTRO ANTERIOR
+/* router.post("/register", async (req, res) => {
   const { first_name, last_name, email, age, password } = req.body;
   if ((!first_name, !last_name, !email, !age, !password)) {
     throw new Error("Debés ingresar todos los campos");
@@ -26,9 +40,49 @@ router.post("/register", async (req, res) => {
   const result = await userModel.create(user);
   console.log(result);
   res.status(201).send({ status: "success", payload: result });
+}); */
+
+router.post(
+  "/login",
+  passport.authenticate("login", { failureRedirect: "/faillogin" }),
+  async (req, res) => {
+    if (!req.user) return res.status(400).send("error");
+    req.session.user = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      email: req.user.email,
+      age: req.user.age,
+      role: req.user.role,
+    };
+    res.status(200).send({ status: "success", payload: req.user });
+  }
+);
+
+router.get("/faillogin", async (req, res) => {
+  console.log("error");
+  res.send({ error: "Fallo" });
 });
 
-router.post("/login", async (req, res) => {
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] }),
+  async (req, res) => {
+    res.send({ status: "Succces", message: res });
+  }
+);
+
+router.get(
+  "/githubcallback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  async (req, res) => {
+    req.session.user = req.user;
+
+    res.redirect("/");
+  }
+);
+
+//! MANEJO DE LOGIN ANTERIOR
+/* router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
@@ -88,6 +142,7 @@ router.post("/login", async (req, res) => {
 
   console.log(req.session.user);
 });
+ */
 
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
@@ -97,6 +152,24 @@ router.get("/logout", (req, res) => {
       res.send({ error: err });
     }
   });
+});
+
+router.post("/restore", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) return;
+
+  const user = await userModel.findOne({ email });
+  console.log(user);
+  if (!user)
+    return res
+      .status(400)
+      .send({ status: "error", message: "No se encuentra el user" });
+  const newPass = createHash(password);
+
+  await userModel.updateOne({ _id: user._id }, { $set: { password: newPass } });
+
+  res.send({ status: "success", message: "Password actualizado" });
 });
 
 export default router;
