@@ -12,7 +12,7 @@ import sessionsRouter from "./routes/sessionsRouter.js";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import passport from "passport";
-import initilizePassport from "./dao/config/passport.config.js";
+import initializePassport from "./config/passport.config.js";
 
 const PORT = process.env.PORT | 8080;
 const app = express();
@@ -52,13 +52,15 @@ app.engine("handlebars", handlebars.engine());
 app.use(viewRouter);
 
 //Inicializar Passport
-initilizePassport();
+initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
 //Listen
 const server = app.listen(PORT, () => {
-  console.log(`servidor corriendo en el puerto ${PORT}`);
+  console.log(
+    `servidor corriendo en el puerto ${PORT}, http://localhost:${PORT}`
+  );
 });
 const io = new Server(server);
 
