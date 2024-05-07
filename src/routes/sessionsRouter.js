@@ -1,27 +1,29 @@
 import { Router } from "express";
-import userModel from "../dao/models/users.js";
-import { createHash, isValidPassword } from "../utils.js";
+import { createHash } from "../utils.js";
 import passport from "passport";
+import authService from "../services/auth.service.js";
 const router = Router();
 
+//Registro de usuario
 router.post(
   "/register",
   passport.authenticate("register", { failureRedirect: "/failregister" }),
   async (req, res) => {
-    res.status(201).send({ status: "success", message: "Usuario registrado" });
+    res.status(201).json({ status: "success", message: "Usuario registrado" });
   }
 );
 
-router.get("/failregister", async (req, res) => {
-  console.log("error");
-  res.send({ error: "Falló" });
+router.get("/failregister", (req, res) => {
+  console.error("Falló el registro");
+  res.status(400).json({ error: "Falló el registro" });
 });
 
+//Login de usuario
 router.post(
   "/login",
   passport.authenticate("login", { failureRedirect: "/faillogin" }),
   async (req, res) => {
-    if (!req.user) return res.status(400).send("error");
+    if (!req.user) return res.status(400).json("error");
     req.session.user = {
       first_name: req.user.first_name,
       last_name: req.user.last_name,
@@ -29,28 +31,21 @@ router.post(
       age: req.user.age,
       role: req.user.role,
     };
-    res.status(200).send({ status: "success", payload: req.user });
+    res.status(200).json({ status: "success", payload: req.user });
   }
 );
 
-router.get("/faillogin", async (req, res) => {
-  console.log("error");
-  res.send({ error: "Fallo" });
+router.get("/faillogin", (req, res) => {
+  console.error("Falló el inicio de sesión");
+  res.status(400).json({ error: "Falló el inicio de sesión" });
 });
 
-router.get("/current", async (req, res) => {
-  console.log(req.user);
-  if (!req.user) {
-    res.status(403).send({ status: "Error", message: "No user authenticated" });
-  }
-  res.send({ status: "success", payload: req.user });
-});
-
+//Login de usuario con Github
 router.get(
   "/github",
   passport.authenticate("github", { scope: ["user:email"] }),
   async (req, res) => {
-    res.send({ status: "Succces", message: res });
+    res.status(200).json({ status: "Succces", message: res });
   }
 );
 
@@ -59,37 +54,47 @@ router.get(
   passport.authenticate("github", { failureRedirect: "/login" }),
   async (req, res) => {
     req.session.user = req.user;
-
     res.redirect("/");
   }
 );
 
+//Logout
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (!err) {
-      res.send({ status: "success", message: "Sesión cerrada" });
+      res.status(200).json({ status: "success", message: "Sesión cerrada" });
     } else {
-      res.send({ error: err });
+      res.status(500).json({ error: err });
     }
   });
 });
 
+//Restaurar contraseña
 router.post("/restore", async (req, res) => {
   const { email, password } = req.body;
-
   if (!email || !password) return;
 
-  const user = await userModel.findOne({ email });
+  const user = await authService.findUserByEmail(email);
   console.log(user);
   if (!user)
     return res
       .status(400)
-      .send({ status: "error", message: "No se encuentra el user" });
+      .json({ status: "error", message: "No se encuentra el user" });
   const newPass = createHash(password);
+  const passwordToUpdate = { password: newPass };
 
-  await userModel.updateOne({ _id: user._id }, { $set: { password: newPass } });
+  await authService.updateUser(user, passwordToUpdate);
 
-  res.send({ status: "success", message: "Password actualizado" });
+  res.status(200).json({ status: "success", message: "Password actualizado" });
+});
+
+//Current: Da la información de la sesión si esta existe
+router.get("/current", async (req, res) => {
+  console.log(req.user);
+  if (!req.user) {
+    res.status(403).json({ status: "Error", message: "No user authenticated" });
+  }
+  res.status(200).json({ status: "success", payload: req.user });
 });
 
 export default router;

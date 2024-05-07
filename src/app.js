@@ -5,31 +5,21 @@ import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import viewRouter from "./routes/viewsRouter.js";
-import mongoose from "mongoose";
-import { productManager } from "./dao/services/productManager.js";
+import { productController } from "./controllers/products.controller.js";
 import viewsRouter from "./routes/viewsRouter.js";
 import sessionsRouter from "./routes/sessionsRouter.js";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
+import { enviroment } from "./config/config.js";
+import MongoSingleton from "./config/mongo.config.js";
 
-const PORT = process.env.PORT | 8080;
+//Creación de servidor con express
 const app = express();
-const DBURL =
-  "mongodb+srv://juanmderosa:sGD3FNfTmzJ0dlNS@cluster0.mo9zqch.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-const connectMongoDB = async () => {
-  try {
-    await mongoose.connect(DBURL);
-    console.log("Conectado con MongoDB");
-  } catch (error) {
-    console.log(error);
-    process.exit();
-  }
-};
-
-connectMongoDB();
+//Conexión a Base de Datos
+MongoSingleton.getInstance();
 
 //Middlewares
 app.use(express.urlencoded({ extended: true }));
@@ -38,14 +28,16 @@ app.use(express.static(__dirname + "/public"));
 app.use(
   session({
     store: new MongoStore({
-      mongoUrl: DBURL,
+      mongoUrl: enviroment.mongoUrl,
       ttl: 3600,
     }),
-    secret: "Secret",
+    secret: enviroment.mongoSecret,
     resave: false,
     saveUninitialized: false,
   })
 );
+
+//Gestión de vistas
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 app.engine("handlebars", handlebars.engine());
@@ -57,9 +49,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Listen
-const server = app.listen(PORT, () => {
+const server = app.listen(enviroment.port, () => {
   console.log(
-    `servidor corriendo en el puerto ${PORT}, http://localhost:${PORT}`
+    `servidor corriendo en el puerto ${enviroment.port}, http://localhost:${enviroment.port}`
   );
 });
 const io = new Server(server);
@@ -70,17 +62,18 @@ app.use("/api/carts", cartRouter);
 app.use("/", viewsRouter);
 app.use("/api/sessions", sessionsRouter);
 
+//Sockets
 io.removeAllListeners();
 io.on("connection", async (socket) => {
   socket.on("getProducts", async () => {
-    const allProducts = await productManager.getProducts();
+    const allProducts = await productController.getProducts();
     io.emit("updateProducts", allProducts);
   });
 
   socket.on("addProduct", async (newProduct) => {
     try {
       await productManager.addProducts(newProduct);
-      const allProducts = await productManager.getProducts();
+      const allProducts = await productController.getProducts();
       io.emit("updateProducts", allProducts);
     } catch (error) {
       console.error("Error al agregar el producto:", error.message);
