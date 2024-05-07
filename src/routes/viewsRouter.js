@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { productManager } from "../dao/services/productManager.js";
-import { cartManager } from "../dao/services/cartManager.js";
-import { auth } from "../dao/middlewares/auth.js";
+import { auth } from "../middlewares/auth.js";
+import productsService from "../services/products.service.js";
+import cartsService from "../services/carts.service.js";
 
 const router = Router();
 
@@ -17,7 +17,7 @@ router.get("/", auth, async (req, res) => {
     if (!queryParam) queryParam = "";
     if (!sortParam) sortParam = "desc";
 
-    const response = await productManager.getProducts(
+    const response = await productsService.getProducts(
       page,
       limit,
       queryParam,
@@ -44,7 +44,7 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/product/:pid", auth, async (req, res) => {
   const { pid } = req.params;
-  const response = await productManager.getProductsById(pid);
+  const response = await productsService.getProductsById(pid);
   console.log(response);
 
   res.render("product", response);
@@ -53,7 +53,7 @@ router.get("/product/:pid", auth, async (req, res) => {
 router.get("/carts/:cid", auth, async (req, res) => {
   const { cid } = req.params;
   try {
-    const response = await cartManager.getProductsByCartId(cid);
+    const response = await cartsService.getProductsByCartId(cid);
     res.render("cart", { response });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -72,7 +72,7 @@ router.get("/realtimeproducts", auth, async (req, res) => {
     if (!queryParam) queryParam = "";
     if (!sortParam) sortParam = "desc";
 
-    const response = await productManager.getProducts(
+    const response = await productsService.getProducts(
       page,
       limit,
       queryParam,
