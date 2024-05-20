@@ -1,0 +1,13 @@
+<div>
+  <h1>CHATS</h1>
+  <input id="chatbox" />
+  {{#each response}}
+    {{obj.socketid}}:
+    {{obj.message}}
+  {{/each}}
+  <div id="message-container"><p id="log"></p></div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chats.js"></script>

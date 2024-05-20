@@ -1,4 +1,4 @@
-import authService from "../services/auth.service.js";
+import { userService } from "../services/auth.service.js";
 import { createHash, isValidPassword } from "../utils.js";
 
 class AuthController {
@@ -6,7 +6,7 @@ class AuthController {
     const { first_name, last_name, email, age } = req.body;
 
     try {
-      const user = await authService.findUserByEmail(username);
+      const user = await userService.findUserByEmail(username);
       if (user) {
         console.log("el usuario ya existe");
         return done(null, false);
@@ -21,7 +21,7 @@ class AuthController {
         role: "usuario",
       };
 
-      let result = await authService.createUser(newUser);
+      let result = await userService.createUser(newUser);
       return done(null, result);
     } catch (error) {
       return done(error);
@@ -41,7 +41,7 @@ class AuthController {
         };
         return done(null, adminUser);
       }
-      const user = await authService.findUserByEmail(username);
+      const user = await userService.findUserByEmail(username);
       console.log(user);
       if (!user) return done(null, false);
       const valid = isValidPassword(user, password);
@@ -55,7 +55,7 @@ class AuthController {
 
   async githubAuth(accessToken, refreshToken, profile, done) {
     try {
-      const user = await authService.findUserByEmail(profile._json.email);
+      const user = await userService.findUserByEmail(profile._json.email);
       //si no existe lo creamos
       if (!user) {
         const newUser = {
@@ -67,7 +67,7 @@ class AuthController {
           role: "usuario",
         };
         //guardamos el usuario en la database
-        let createdUser = await authService.createUser(newUser);
+        let createdUser = await userService.createUser(newUser);
         done(null, createdUser);
       } else {
         done(null, user);

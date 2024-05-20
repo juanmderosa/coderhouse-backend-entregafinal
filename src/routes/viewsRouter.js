@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { auth } from "../middlewares/auth.js";
-import productsService from "../services/products.service.js";
-import cartsService from "../services/carts.service.js";
+import { productRepository } from "../repositories/index.js";
+import { cartRepository } from "../repositories/index.js";
+import { messagesRepository } from "../repositories/index.js";
 
 const router = Router();
 
@@ -17,7 +18,7 @@ router.get("/", auth, async (req, res) => {
     if (!queryParam) queryParam = "";
     if (!sortParam) sortParam = "desc";
 
-    const response = await productsService.getProducts(
+    const response = await productRepository.getProducts(
       page,
       limit,
       queryParam,
@@ -44,7 +45,7 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/product/:pid", auth, async (req, res) => {
   const { pid } = req.params;
-  const response = await productsService.getProductsById(pid);
+  const response = await productRepository.getProductsById(pid);
   console.log(response);
 
   res.render("product", response);
@@ -53,8 +54,8 @@ router.get("/product/:pid", auth, async (req, res) => {
 router.get("/carts/:cid", auth, async (req, res) => {
   const { cid } = req.params;
   try {
-    const response = await cartsService.getProductsByCartId(cid);
-    res.render("cart", { response });
+    const response = await cartRepository.getProductsByCartId(cid);
+    res.render("cart", response);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -72,7 +73,7 @@ router.get("/realtimeproducts", auth, async (req, res) => {
     if (!queryParam) queryParam = "";
     if (!sortParam) sortParam = "desc";
 
-    const response = await productsService.getProducts(
+    const response = await productRepository.getProducts(
       page,
       limit,
       queryParam,
@@ -83,6 +84,16 @@ router.get("/realtimeproducts", auth, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/chat", async (req, res) => {
+  try {
+    const allMessages = await messagesRepository.getMessages();
+    res.render("chat", allMessages);
+  } catch (error) {
+    console.error("Error al cargar la página de chat:", error);
+    res.status(500).send("Error al cargar la página de chat");
   }
 });
 

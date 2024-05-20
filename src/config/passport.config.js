@@ -2,7 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import GitHubStrategy from "passport-github2";
 import { enviroment } from "./config.js";
-import authService from "../services/auth.service.js";
+import { userService } from "../services/auth.service.js";
 import { authController } from "../controllers/auth.controller.js";
 
 const LocalStrategy = local.Strategy;
@@ -68,7 +68,7 @@ const initializePassport = () => {
         };
         done(null, adminUser);
       } else {
-        let user = await authService.findUserByEmail(id);
+        let user = await userService.findUserById(id);
         done(null, user);
       }
     } catch (error) {

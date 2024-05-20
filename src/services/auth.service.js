@@ -1,31 +1,21 @@
-import userModel from "../models/users.model.js";
+import { usersRepository } from "../repositories/index.js";
 
-const findUserByEmail = async (username) => {
-  const user = await userModel.findOne({ email: username });
-  return user;
-};
+class usersService {
+  findUserByEmail = async (username) => {
+    return await usersRepository.findUserByEmail(username);
+  };
 
-const findUserById = async (id) => {
-  const user = await userModel.findOne({ _id: id });
-  return user;
-};
+  findUserById = async (id) => {
+    return await usersRepository.findUserById({ _id: id });
+  };
 
-const createUser = async (user) => {
-  let createdUser = await userModel.create(user);
-  return createdUser;
-};
+  createUser = async (user) => {
+    return await usersRepository.createUser(user);
+  };
 
-const updateUser = async (user, dataToUpdate) => {
-  let updatedUser = await userModel.updateOne(
-    { _id: user._id },
-    { $set: dataToUpdate }
-  );
-  return updatedUser;
-};
+  updateUser = async (user, dataToUpdate) => {
+    return await usersRepository.updateUser(user, dataToUpdate);
+  };
+}
 
-export default {
-  findUserByEmail,
-  createUser,
-  updateUser,
-  findUserById,
-};
+export const userService = new usersService();

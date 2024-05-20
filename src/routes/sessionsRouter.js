@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { createHash } from "../utils.js";
 import passport from "passport";
-import authService from "../services/auth.service.js";
+import { usersRepository } from "../repositories/index.js";
+import CurrentDTO from "../dao/DTOs/currentDTO.js";
 const router = Router();
 
 //Registro de usuario
@@ -74,7 +75,7 @@ router.post("/restore", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return;
 
-  const user = await authService.findUserByEmail(email);
+  const user = await usersRepository.findUserByEmail(email);
   console.log(user);
   if (!user)
     return res
@@ -83,18 +84,22 @@ router.post("/restore", async (req, res) => {
   const newPass = createHash(password);
   const passwordToUpdate = { password: newPass };
 
-  await authService.updateUser(user, passwordToUpdate);
+  await usersRepository.updateUser(user, passwordToUpdate);
 
   res.status(200).json({ status: "success", message: "Password actualizado" });
 });
 
 //Current: Da la información de la sesión si esta existe
 router.get("/current", async (req, res) => {
-  console.log(req.user);
   if (!req.user) {
     res.status(403).json({ status: "Error", message: "No user authenticated" });
   }
-  res.status(200).json({ status: "success", payload: req.user });
+  const currentUser = new CurrentDTO(req.user);
+
+  res.status(200).json({
+    status: "success",
+    payload: currentUser,
+  });
 });
 
 export default router;

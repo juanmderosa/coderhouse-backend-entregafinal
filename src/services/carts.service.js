@@ -1,117 +1,33 @@
-import { cartsModel } from "../models/carts.model.js";
+import { cartRepository } from "../repositories/index.js";
 
-const createCart = async () => {
-  let result = await cartsModel.create();
-  console.log(result);
-  return result;
-};
+class CartService {
+  createCart = async () => {
+    return await cartRepository.createCart();
+  };
 
-const getProductsByCartId = async (id) => {
-  let result = await cartsModel.findById(id).lean();
-  console.log(result);
-  return result;
-};
+  getProductsByCartId = async (cid) => {
+    return await cartRepository.getProductsByCartId(cid);
+  };
 
-const addProductsToCart = async (cartId, productId, quantity) => {
-  const cart = await cartsModel.findById(cartId);
-  console.log(cart);
+  addProductsToCart = async (cid, pid, quantity) => {
+    return await cartRepository.addProductsToCart(cid, pid, quantity);
+  };
 
-  const productIndex = cart.products.findIndex(
-    (item) => item.product._id.toString() === productId.toString()
-  );
+  deleteCart = async (cid) => {
+    return await cartRepository.deleteCart(cid);
+  };
 
-  if (productIndex === -1) {
-    cart.products.push({ product: productId, quantity });
-  } else {
-    throw new Error("Product already exists in cart");
-  }
-  return await cart.save();
-};
+  deleteProductsFromCart = async (cid, pid) => {
+    return await cartRepository.deleteProductsFromCart(cid, pid);
+  };
 
-const deleteCart = async (cid) => {
-  try {
-    let data = await cartsModel.deleteOne({ _id: cid });
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
+  editProductQuantityFromCart = async (cid, pid, quantity) => {
+    return cartRepository.editProductQuantityFromCart(cid, pid, quantity);
+  };
 
-const deleteProductsFromCart = async (cid, pid) => {
-  try {
-    const cart = await cartsModel.findById(cid);
-    if (!cart) {
-      throw new Error("Cart not found");
-    }
-    const productIndex = cart.products.findIndex(
-      (item) => item.product._id.toString() === pid.toString()
-    );
-    if (productIndex === -1) {
-      throw new Error("Product not found in cart");
-    }
-    cart.products.splice(productIndex, 1);
-    await cart.save();
-    return cart;
-  } catch (error) {
-    throw error;
-  }
-};
+  updateCartWithProducts = async (cid, newProducts) => {
+    return cartRepository.updateCartWithProducts(cid, newProducts);
+  };
+}
 
-const editProductQuantityFromCart = async (cid, pid, quantity) => {
-  try {
-    const cart = await cartsModel.findById(cid);
-    if (!cart) {
-      throw new Error("Cart not found");
-    }
-    const productIndex = cart.products.findIndex(
-      (item) => item.product._id.toString() === pid.toString()
-    );
-    if (productIndex === -1) {
-      throw new Error("Product not found in cart");
-    }
-    cart.products[productIndex].quantity = quantity;
-    await cart.save();
-    return cart;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const updateCartWithProducts = async (cid, newProducts) => {
-  try {
-    const cart = await cartsModel.findById(cid);
-
-    if (!cart) {
-      throw new Error("Cart not found");
-    }
-
-    for (const newProduct of newProducts) {
-      const existingProductIndex = cart.products.findIndex(
-        (item) => item.product._id.toString() === newProduct.product.toString()
-      );
-
-      if (existingProductIndex !== -1) {
-        cart.products[existingProductIndex].quantity += newProduct.quantity;
-      } else {
-        cart.products.push(newProduct);
-      }
-    }
-
-    await cart.save();
-
-    return cart;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export default {
-  createCart,
-  getProductsByCartId,
-  deleteCart,
-  deleteProductsFromCart,
-  addProductsToCart,
-  editProductQuantityFromCart,
-  updateCartWithProducts,
-};
+export const cartService = new CartService();
