@@ -1,10 +1,10 @@
-import cartService from "../services/carts.service.js";
+import { cartService } from "../services/carts.service.js";
 
 class CartManager {
   //Crear un nuevo carrito
   async createCart(req, res) {
-    const cart = await cartService.createCart;
     try {
+      const cart = await cartService.createCart();
       res.json({ status: "success", cart });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -13,8 +13,8 @@ class CartManager {
 
   //Ver productos de un carrito por id de carrito
   async getProductsByCartId(req, res) {
-    const id = req.params.id;
-    const cart = await cartService.getProductsByCartId(id);
+    const cid = req.params.cid;
+    const cart = await cartService.getProductsByCartId(cid);
     try {
       res.json(cart.products);
     } catch (error) {
@@ -25,7 +25,7 @@ class CartManager {
   //Agregar productos a carrito
   async addProductsToCart(req, res) {
     const { cid, pid } = req.params;
-    const quantity = req.body;
+    const { quantity } = req.body;
     const updatedCart = await cartService.addProductsToCart(cid, pid, quantity);
     try {
       res.json({ status: "success", cart: updatedCart });
@@ -59,7 +59,7 @@ class CartManager {
   //Editar cantidad de un producto en el carrito
   async editProductQuantityFromCart(req, res) {
     const { cid, pid } = req.params;
-    const quantity = req.body;
+    const { quantity } = req.body;
 
     try {
       const updatedCart = await cartService.editProductQuantityFromCart(

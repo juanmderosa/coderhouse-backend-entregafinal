@@ -1,28 +1,29 @@
 <div>
-    <p>Bienvenido, {{user.first_name}} {{user.last_name}}!</p><p>Role: {{user.role}}</p><p>E-mail: {{user.email}}</p><p>Age: {{user.age}}</p>
-    <h1 style="text-align: center;">Products</h1>
-    <ul>
-        {{#each products}}
-            <li style="list-style: none; margin-bottom: 10px; border: 1px solid; padding: 1rem">
-                <h2>{{this.title}}</h2>
-                <p>${{this.price}}</p>
-                <p>{{this.description}}</p>
-                <button>Agregar al Carrito</button>
-                <a href="/product/{{this._id}}">Ver Producto</a>
-            </li>
-        {{/each}}
-    </ul>
-    <div>
-        {{#if hasPrevPage}}
-            <a href="{{prevLink}}">Anterior</a>
-        {{/if}}
-        &nbsp;
-        {{page}}
-        &nbsp;
-        {{#if hasNextPage}}
-            <a href="{{nextLink}}">Siguiente</a>
-        {{/if}} 
-    </div>
+  <p>Bienvenido, {{user.first_name}} {{user.last_name}}!</p><p>Role:
+    {{user.role}}</p><p>E-mail: {{user.email}}</p><p>Age: {{user.age}}</p>
+  <h1 style="text-align: center;">Products</h1>
+  <ul>
+    {{#each products}}
+      <li
+        style="list-style: none; margin-bottom: 10px; border: 1px solid; padding: 1rem"
+      >
+        <h2>{{this.title}}</h2>
+        <p>${{this.price}}</p>
+        <p>{{this.description}}</p>
+        <button>Agregar al Carrito</button>
+        <a href="/product/{{this._id}}">Ver Producto</a>
+      </li>
+    {{/each}}
+  </ul>
+  <div>
+    {{#if hasPrevPage}}
+      <a href="{{prevLink}}">Anterior</a>
+    {{/if}}
+    &nbsp;
+    {{page}}
+    &nbsp;
+    {{#if hasNextPage}}
+      <a href="{{nextLink}}">Siguiente</a>
+    {{/if}}
+  </div>
 </div>
-
-

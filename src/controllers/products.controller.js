@@ -1,60 +1,52 @@
-import productsService from "../services/products.service.js";
+import { productService } from "../services/products.service.js";
 
-class ProductManager {
-  //Ver todos los productos
+class ProductController {
   async getProducts(req, res) {
     try {
-      let page = parseInt(req.query.page);
-      let limit = parseInt(req.query.limit);
-      let queryParam = req.query.query;
-      let sortParam = req.query.sort;
+      let page = parseInt(req.query.page) || 1;
+      let limit = parseInt(req.query.limit) || 10;
+      let queryParam = req.query.query || "";
+      let sortParam = req.query.sort || "desc";
 
-      if (!page) page = 1;
-      if (!limit) limit = 10;
-      if (!queryParam) queryParam = "";
-      if (!sortParam) sortParam = "desc";
-
-      const response = await productsService.getProducts(
+      const response = await productService.getProducts(
         page,
         limit,
         queryParam,
         sortParam
       );
-
       res.json(response);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
-  //Ver producto por ID
+
   async getProductsById(req, res) {
     let { pid } = req.params;
     try {
-      const product = await productsService.getProductsById(pid);
+      const product = await productService.getProductsById(pid);
       if (!product) return res.send({ error: "Producto no encontrado" });
       res.json(product);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   }
-  //Agregar nuevo producto
+
   async addProducts(req, res) {
     const newProduct = req.body;
     try {
-      await productsService.addProducts(newProduct);
-      res.json({ status: "succes", newProduct });
+      await productService.addProducts(newProduct);
+      res.json({ status: "success", newProduct });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   }
 
-  //Editar o Actualizar Producto
   async updateProduct(req, res) {
     const productId = req.params.pid;
     const updatedFields = req.body;
     try {
-      const updatedProduct = await productsService.updateProduct(
+      const updatedProduct = await productService.updateProduct(
         productId,
         updatedFields
       );
@@ -64,11 +56,10 @@ class ProductManager {
     }
   }
 
-  //Eliminar producto
   async deleteProduct(req, res) {
     const productId = req.params.pid;
     try {
-      await productsService.deleteProduct(productId);
+      await productService.deleteProduct(productId);
       res.json({ status: "success" });
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -76,4 +67,4 @@ class ProductManager {
   }
 }
 
-export const productController = new ProductManager();
+export const productController = new ProductController();
