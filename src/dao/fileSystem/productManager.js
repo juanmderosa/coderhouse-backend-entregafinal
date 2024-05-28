@@ -1,11 +1,11 @@
 import { randomUUID } from "crypto";
 import fs from "fs";
-import __dirname from "../utils.js";
+import rootDir from "../../utils/utils.js";
 
 class ProductManager {
   constructor(products = []) {
     this.products = products;
-    this.path = `${__dirname}/data/productos.json`;
+    this.path = `${rootDir}/data/productos.json`;
   }
 
   async getProducts() {

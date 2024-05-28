@@ -8,15 +8,19 @@ import Messages from "../dao/mongo/classes/messages.dao.js";
 import MessageRepository from "./messages.repositories.js";
 import TicketsRepository from "./ticket.repositories.js";
 import Tickets from "../dao/mongo/classes/tickets.dao.js";
+import Mocking from "../dao/mongo/classes/mocking.dao.js";
+import MockingRepository from "./mocking.repository.js";
 
 const productDao = new Products();
 const cartDao = new Carts();
 const usersDao = new Users();
 const messageDao = new Messages();
 const ticketsDao = new Tickets();
+const mockingDao = new Mocking();
 
 export const productRepository = new ProductRepository(productDao);
 export const cartRepository = new CartRepository(cartDao);
 export const usersRepository = new UsersRepository(usersDao);
 export const messagesRepository = new MessageRepository(messageDao);
 export const ticketsRepository = new TicketsRepository(ticketsDao);
+export const mockingRepository = new MockingRepository(mockingDao);

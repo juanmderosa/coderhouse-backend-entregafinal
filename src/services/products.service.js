@@ -20,6 +20,10 @@ class ProductService {
   async deleteProduct(id) {
     return productRepository.deleteProduct(id);
   }
+
+  async getProductsByCode(code) {
+    return productRepository.getProductsByCode(code);
+  }
 }
 
 export const productService = new ProductService();

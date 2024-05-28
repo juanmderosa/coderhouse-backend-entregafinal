@@ -26,10 +26,16 @@ class CartManager {
   async addProductsToCart(req, res) {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
-    const updatedCart = await cartService.addProductsToCart(cid, pid, quantity);
     try {
+      const updatedCart = await cartService.addProductsToCart(
+        cid,
+        pid,
+        quantity
+      );
+
       res.json({ status: "success", cart: updatedCart });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: error.message });
     }
   }

@@ -1,4 +1,7 @@
 import { productsModel } from "../models/products.model.js";
+import { CustomError } from "../../../utils/customError.js";
+import { validateProduct } from "../../../utils/productsError.js";
+import { errorTypes } from "../../../utils/errorTypes.js";
 
 export default class Products {
   getProducts = async (page, limit, queryParam, sortParam) => {
@@ -56,8 +59,6 @@ export default class Products {
         nextLink: nextLink,
       };
 
-      console.log(response);
-
       return response;
     } catch (error) {
       console.error(error);
@@ -75,13 +76,23 @@ export default class Products {
     }
   };
 
+  getProductsByCode = async (code) => {
+    try {
+      let product = await productsModel.findOne({ code: code });
+      console.log(product);
+      return product;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   addProducts = async (product) => {
     try {
       if (
-        product.title ||
-        product.description ||
-        product.price ||
-        product.code ||
+        product.title &&
+        product.description &&
+        product.price &&
+        product.code &&
         product.stock
       ) {
         product.status = product.status || true;
@@ -89,8 +100,11 @@ export default class Products {
         console.log(data);
         return data;
       } else {
-        throw new Error(
-          "Debes agregar todos los campos para crear un nuevo producto"
+        throw CustomError.CustomError(
+          "Missing Data",
+          "Enter all the properties",
+          errorTypes.ERROR_INVALID_ARGUMENTS,
+          validateProduct(product)
         );
       }
     } catch (error) {

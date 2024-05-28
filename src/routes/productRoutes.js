@@ -6,6 +6,7 @@ export const productRouter = Router();
 
 productRouter.get("/", productController.getProducts);
 productRouter.get("/:pid", productController.getProductsById);
+productRouter.get("/code/:code", productController.getProductsByCode);
 productRouter.post("/", authorization("admin"), productController.addProducts);
 productRouter.put(
   "/:pid",

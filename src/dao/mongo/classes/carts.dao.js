@@ -1,3 +1,6 @@
+import { validateCart } from "../../../utils/cartError.js";
+import { CustomError } from "../../../utils/customError.js";
+import { errorTypes } from "../../../utils/errorTypes.js";
 import { cartsModel } from "../models/carts.model.js";
 
 export default class Carts {
@@ -12,19 +15,26 @@ export default class Carts {
   };
 
   addProductsToCart = async (cid, pid, quantity) => {
-    const cart = await cartsModel.findById(cid);
-    console.log(cart);
+    if (quantity || typeof quantity === "number" || quantity > 0) {
+      const cart = await cartsModel.findById(cid);
+      const productIndex = cart.products.findIndex(
+        (item) => item.product._id.toString() === pid.toString()
+      );
 
-    const productIndex = cart.products.findIndex(
-      (item) => item.product._id.toString() === pid.toString()
-    );
-
-    if (productIndex === -1) {
-      cart.products.push({ product: pid, quantity });
+      if (productIndex === -1) {
+        cart.products.push({ product: pid, quantity });
+      } else {
+        throw new Error("Product already exists in cart");
+      }
+      return await cart.save();
     } else {
-      throw new Error("Product already exists in cart");
+      throw CustomError.CustomError(
+        "Missing Data",
+        "Missing or invalid quantity in request",
+        errorTypes.ERROR_INVALID_ARGUMENTS,
+        validateCart(quantity)
+      );
     }
-    return await cart.save();
   };
 
   deleteCart = async (cid) => {

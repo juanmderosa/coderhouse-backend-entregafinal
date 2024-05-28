@@ -1,11 +1,10 @@
 import { randomUUID } from "crypto";
 import fs from "fs";
-import __dirname from "../utils.js";
-console.log(__dirname);
+import rootDir from "../../utils/utils.js";
 
 class CartManager {
   constructor() {
-    this.path = `${__dirname}/data/carrito.json`;
+    this.path = `${rootDir}/data/carrito.json`;
     console.log(this.path);
   }
 
