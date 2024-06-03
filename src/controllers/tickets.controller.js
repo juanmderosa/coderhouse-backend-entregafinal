@@ -39,8 +39,8 @@ class TicketsManager {
         );
       }
 
-      console.log({ createdTicket, deletedProducts });
       if (productsInStock.length > 0) {
+        req.logger.debug("Se creó el ticket", createdTicket);
         res.status(200).json({
           status: "success",
           payload: createdTicket,
@@ -48,9 +48,11 @@ class TicketsManager {
           deletedProducts,
         });
       } else {
+        req.logger.error("No se pudo crear el ticket");
         res.status(500).json({ message: "All the produts are out of stock" });
       }
     } catch (error) {
+      req.logger.error("No se pudo crear el ticket", error);
       res.status(500).json({ error: error.message });
     }
   }
@@ -60,8 +62,10 @@ class TicketsManager {
     const { cid } = req.params;
     try {
       const ticket = await ticketsService.getTicketById(cid);
+      req.logger.debug("Se obtuvo el ticket", ticket);
       res.status(200).json(ticket);
     } catch (error) {
+      req.logger.error("No se pudo obtener el ticket", error);
       res.status(500).json({ error: error.message });
     }
   }

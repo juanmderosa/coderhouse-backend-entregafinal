@@ -15,6 +15,7 @@ import { enviroment } from "./config/config.js";
 import MongoSingleton from "./config/mongo.config.js";
 import { initializeChatSocket } from "./sockets/chatSocket.js";
 import mockingRouter from "./routes/mockingRoutes.js";
+import { addLogger, logger } from "./utils/Logger.js";
 
 //Creación de servidor con express
 const app = express();
@@ -48,10 +49,11 @@ app.use(viewRouter);
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(addLogger);
 
 //Listen
 const server = app.listen(enviroment.port, () => {
-  console.log(
+  logger.info(
     `servidor corriendo en el puerto ${enviroment.port}, http://localhost:${enviroment.port}`
   );
 });

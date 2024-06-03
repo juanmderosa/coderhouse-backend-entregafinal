@@ -15,7 +15,7 @@ router.post(
 );
 
 router.get("/failregister", (req, res) => {
-  console.error("Falló el registro");
+  req.logger.error("Falló el registro");
   res.status(400).json({ error: "Falló el registro" });
 });
 
@@ -24,7 +24,10 @@ router.post(
   "/login",
   passport.authenticate("login", { failureRedirect: "/faillogin" }),
   async (req, res) => {
-    if (!req.user) return res.status(400).json("error");
+    if (!req.user) {
+      return res.status(400).json("error");
+    }
+
     req.session.user = {
       first_name: req.user.first_name,
       last_name: req.user.last_name,
@@ -32,12 +35,12 @@ router.post(
       age: req.user.age,
       role: req.user.role,
     };
+    req.logger.info("Usuario logueado", req.session.user);
     res.status(200).json({ status: "success", payload: req.user });
   }
 );
 
 router.get("/faillogin", (req, res) => {
-  console.error("Falló el inicio de sesión");
   res.status(400).json({ error: "Falló el inicio de sesión" });
 });
 
@@ -76,7 +79,6 @@ router.post("/restore", async (req, res) => {
   if (!email || !password) return;
 
   const user = await usersRepository.findUserByEmail(email);
-  console.log(user);
   if (!user)
     return res
       .status(400)

@@ -38,7 +38,7 @@ router.get("/", auth, async (req, res) => {
       nextLink: response.nextLink,
     });
   } catch (error) {
-    console.error(error);
+    req.logger.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -46,7 +46,12 @@ router.get("/", auth, async (req, res) => {
 router.get("/product/:pid", auth, async (req, res) => {
   const { pid } = req.params;
   const response = await productRepository.getProductsById(pid);
-  console.log(response);
+
+  if (!response) {
+    req.logger.error("Product not found");
+    res.status(404).json({ error: "Product not found" });
+    return;
+  }
 
   res.render("product", response);
 });
@@ -57,6 +62,7 @@ router.get("/carts/:cid", auth, async (req, res) => {
     const response = await cartRepository.getProductsByCartId(cid);
     res.render("cart", response);
   } catch (error) {
+    req.logger.error(error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -82,7 +88,7 @@ router.get("/realtimeproducts", auth, async (req, res) => {
 
     res.render("realtimeproducts", response);
   } catch (error) {
-    console.error(error);
+    req.logger.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -92,7 +98,7 @@ router.get("/chat", async (req, res) => {
     const allMessages = await messagesRepository.getMessages();
     res.render("chat", allMessages);
   } catch (error) {
-    console.error("Error al cargar la página de chat:", error);
+    req.logger.error("Error al cargar la página de chat:", error);
     res.status(500).send("Error al cargar la página de chat");
   }
 });
