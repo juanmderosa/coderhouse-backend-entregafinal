@@ -1,5 +1,5 @@
 import { userService } from "../services/auth.service.js";
-import { createHash, isValidPassword } from "../utils.js";
+import { createHash, isValidPassword } from "../utils/utils.js";
 
 class AuthController {
   async registerUser(req, username, password, done) {

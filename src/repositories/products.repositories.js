@@ -21,4 +21,8 @@ export default class ProductRepository {
   deleteProduct = async (id) => {
     return this.dao.deleteProduct(id);
   };
+
+  getProductsByCode = async (code) => {
+    return this.dao.getProductsByCode(code);
+  };
 }

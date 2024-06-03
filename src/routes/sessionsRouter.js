@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createHash } from "../utils.js";
+import { createHash } from "../utils/utils.js";
 import passport from "passport";
 import { usersRepository } from "../repositories/index.js";
 import CurrentDTO from "../dao/DTOs/currentDTO.js";
