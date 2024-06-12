@@ -1,0 +1,6 @@
+{"age":38,"email":"testjuan@test.com","first_name":"Juan","last_name":"Test","level":"error","message":"Usuario logueado","role":"usuario"}
+{"level":"fatal","message":"Usuario no encontrado"}
+{"level":"fatal","message":"Usuario no encontrado"}
+{"level":"error","message":"Producto no encontrado"}
+{"level":"error","message":"Producto no encontrado"}
+{"level":"error","message":"Producto no encontrado"}

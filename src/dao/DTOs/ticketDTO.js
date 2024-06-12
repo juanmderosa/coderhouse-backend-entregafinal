@@ -33,7 +33,7 @@ class TicketDTO {
         return prod.product._id; // Retorna el ID del producto eliminado
       })
     );
-    console.log("DELETED PRODUCTS", deletedProducts);
+
     return deletedProducts;
   }
 }

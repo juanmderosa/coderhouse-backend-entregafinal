@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import fs from "fs";
 import rootDir from "../../utils/utils.js";
+import { logger } from "../../utils/Logger.js";
 
 class ProductManager {
   constructor(products = []) {
@@ -61,15 +62,12 @@ class ProductManager {
       status: this.status,
     };
     productsList.push(product);
-    console.log("Parsed Data", productsList);
 
     await fs.promises.writeFile(
       this.path,
       JSON.stringify(productsList, null, "\t")
     );
 
-    console.log("producto agregado", product);
-    console.log("lista de productos", this.products);
     return product;
   }
 
@@ -78,9 +76,8 @@ class ProductManager {
     const product = productsList.find((product) => product.id === id);
 
     if (!product) {
-      console.log("Product no encontrado");
+      logger.error("Producto no encontrado");
     }
-    console.log("GetProductById", product);
     return product;
   }
 
@@ -92,6 +89,7 @@ class ProductManager {
       );
 
       if (productIndex === -1) {
+        logger.error("No existe un producto con ese ID");
         throw new Error("No existe un producto con ese ID");
       }
       const productUpdated = {
@@ -113,8 +111,8 @@ class ProductManager {
   async deleteProduct(id) {
     const productsList = await this.getProducts();
     const productIndex = productsList.findIndex((product) => product.id === id);
-    console.log(productIndex);
     if (productIndex === -1) {
+      logger.error("No existe un producto con ese ID");
       throw new Error("No existe un producto con ese ID");
     } else {
       const productToDelete = productsList[productIndex];
@@ -125,7 +123,6 @@ class ProductManager {
         this.path,
         JSON.stringify(filteredProducts, null, "\t")
       );
-      console.log("Deleted Product", productToDelete);
       return productToDelete;
     }
   }

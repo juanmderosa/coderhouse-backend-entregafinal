@@ -1,12 +1,14 @@
+import { logger } from "../../utils/Logger";
+
 const socket = io();
 
 socket.on("connect", () => {
-  console.log("Conectado al servidor de WebSocket");
+  logger.info("Conectado al servidor de WebSocket");
   socket.emit("getProducts");
 });
 
 socket.on("updateProducts", (products) => {
-  console.log("Productos actualizados:", products);
+  logger.info("Productos actualizados:", products);
 
   const productsList = document.getElementById("products-list");
   productsList.innerHTML = "";
@@ -45,8 +47,6 @@ form.addEventListener("submit", async (e) => {
     stock: stock,
     status: true,
   };
-
-  console.log(newProduct);
 
   await socket.emit("addProduct", newProduct);
 

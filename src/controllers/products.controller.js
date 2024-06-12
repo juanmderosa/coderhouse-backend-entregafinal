@@ -1,4 +1,5 @@
 import { productService } from "../services/products.service.js";
+import { logger } from "../utils/Logger.js";
 
 class ProductController {
   async getProducts(req, res) {
@@ -14,9 +15,11 @@ class ProductController {
         queryParam,
         sortParam
       );
+
+      req.logger.debug(response);
       res.json(response);
     } catch (error) {
-      console.error(error);
+      req.logger.error("No se pudo obtener el listado de produtos", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
@@ -25,9 +28,14 @@ class ProductController {
     let { pid } = req.params;
     try {
       const product = await productService.getProductsById(pid);
-      if (!product) return res.send({ error: "Producto no encontrado" });
+      if (!product) {
+        req.logger.error("Producto no encontrado");
+        return res.send({ error: "Producto no encontrado" });
+      }
+      req.logger.debug(product);
       res.json(product);
     } catch (error) {
+      req.logger.error(error);
       res.status(400).json({ error: error.message });
     }
   }
@@ -36,9 +44,14 @@ class ProductController {
     let { code } = req.params;
     try {
       const product = await productService.getProductsByCode(code);
-      if (!product) return res.send({ error: "Producto no encontrado" });
+      if (!product) {
+        req.logger.error("Producto no encontrado");
+        return res.send({ error: "Producto no encontrado" });
+      }
+      req.logger.debug(product);
       res.status(200).json(product);
     } catch (error) {
+      req.logger.error(error);
       res.status(400).json({ error: error.message });
     }
   }
@@ -66,6 +79,7 @@ class ProductController {
           newProduct[prop] !== null
       );
       if (!hasAllRequiredProps) {
+        req.logger.warning("Faltan campos para crear el producto");
         return res.status(400).json({
           error:
             "Debes agregar todos los campos requeridos para crear un nuevo producto.",
@@ -83,6 +97,7 @@ class ProductController {
 
       let exist = await productService.getProductsByCode(newProduct.code);
       if (exist) {
+        req.logger.warning("El producto ya existe");
         res.setHeader("Content-Type", "application/json");
         return res.status(400).json({
           error: `The product with the code ${newProduct.code} already exists`,
@@ -90,6 +105,7 @@ class ProductController {
       }
 
       await productService.addProducts(newProduct);
+      req.logger.info("El producto se creó correctamente", newProduct);
       res.json({ status: "success", newProduct });
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -104,8 +120,11 @@ class ProductController {
         productId,
         updatedFields
       );
+      req.logger.debug("Se editó el producto correctamente", updatedProduct);
+
       res.json({ status: "success", updatedProduct });
     } catch (error) {
+      req.logger.error("No se pudo editar el producto", error);
       res.status(400).json({ error: error.message });
     }
   }
@@ -114,8 +133,10 @@ class ProductController {
     const productId = req.params.pid;
     try {
       await productService.deleteProduct(productId);
+      req.logger.debug("Se eliminó el producto correctamente");
       res.json({ status: "success" });
     } catch (error) {
+      req.logger.error("No se pudo eliminar el producto", error);
       res.status(400).json({ error: error.message });
     }
   }

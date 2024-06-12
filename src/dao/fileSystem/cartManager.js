@@ -1,11 +1,11 @@
 import { randomUUID } from "crypto";
 import fs from "fs";
 import rootDir from "../../utils/utils.js";
+import { logger } from "../../utils/Logger.js";
 
 class CartManager {
   constructor() {
     this.path = `${rootDir}/data/carrito.json`;
-    console.log(this.path);
   }
 
   async createCart() {
@@ -26,9 +26,9 @@ class CartManager {
       const newCart = { id, products: [] };
       carts.push(newCart);
       await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-      console.log("Nuevo carrito creado:", newCart);
     } catch (error) {
-      console.error("Error al crear el carrito:", error);
+      logger.error("Error al crear el carrito:", error);
+      throw new Error("Error al crear el carrito", error);
     }
   }
 
@@ -39,11 +39,11 @@ class CartManager {
       const cart = cartList.find((cart) => cart.id === id);
 
       if (!cart) {
-        console.log("Carrito no encontrado");
+        logger.error("Carrito no encontrado");
       }
-      console.log("getProductsByCartId", cart);
       return cart;
     } catch (error) {
+      logger.error(error);
       throw new Error("Error al obtener productos del carrito");
     }
   }
@@ -54,6 +54,7 @@ class CartManager {
       const cartIndex = cartList.findIndex((cart) => cart.id === id);
 
       if (cartIndex === -1) {
+        logger.error("No existe un carrito con ese ID");
         throw new Error("No existe un carrito con ese ID");
       }
 
@@ -74,6 +75,7 @@ class CartManager {
 
       return cartList[cartIndex];
     } catch (error) {
+      logger.error(error);
       throw new Error(error.message);
     }
   }

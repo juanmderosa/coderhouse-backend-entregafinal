@@ -1,6 +1,7 @@
 import { validateCart } from "../../../utils/cartError.js";
 import { CustomError } from "../../../utils/customError.js";
 import { errorTypes } from "../../../utils/errorTypes.js";
+import { logger } from "../../../utils/Logger.js";
 import { cartsModel } from "../models/carts.model.js";
 
 export default class Carts {
@@ -40,10 +41,9 @@ export default class Carts {
   deleteCart = async (cid) => {
     try {
       let data = await cartsModel.deleteOne({ _id: cid });
-      console.log(data);
       return data;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 

@@ -1,4 +1,5 @@
 import { userService } from "../services/auth.service.js";
+import { logger } from "../utils/Logger.js";
 import { createHash, isValidPassword } from "../utils/utils.js";
 
 class AuthController {
@@ -8,7 +9,7 @@ class AuthController {
     try {
       const user = await userService.findUserByEmail(username);
       if (user) {
-        console.log("el usuario ya existe");
+        logger.warning("El usuario ya existe");
         return done(null, false);
       }
 
@@ -22,8 +23,10 @@ class AuthController {
       };
 
       let result = await userService.createUser(newUser);
+      logger.info("Usuario creado correctamente", newUser);
       return done(null, result);
     } catch (error) {
+      logger.error(error);
       return done(error);
     }
   }
@@ -41,14 +44,19 @@ class AuthController {
         };
         return done(null, adminUser);
       }
+
       const user = await userService.findUserByEmail(username);
-      console.log(user);
-      if (!user) return done(null, false);
+
+      if (!user) {
+        logger.fatal("Usuario no encontrado");
+        return done(null, false);
+      }
       const valid = isValidPassword(user, password);
       if (!valid) return done(null, false);
 
       return done(null, user);
     } catch (error) {
+      logger.error("Usuario no encontrado", error);
       return done(error);
     }
   }
@@ -73,6 +81,7 @@ class AuthController {
         done(null, user);
       }
     } catch (error) {
+      logger.error("Usuario no encontrado", error);
       return done(error);
     }
   }

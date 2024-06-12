@@ -61,7 +61,7 @@ export default class Products {
 
       return response;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       throw error;
     }
   };
@@ -69,20 +69,18 @@ export default class Products {
   getProductsById = async (id) => {
     try {
       let product = await productsModel.findById(id);
-      console.log(product);
       return product;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 
   getProductsByCode = async (code) => {
     try {
       let product = await productsModel.findOne({ code: code });
-      console.log(product);
       return product;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 
@@ -97,7 +95,6 @@ export default class Products {
       ) {
         product.status = product.status || true;
         let data = await productsModel.create(product);
-        console.log(data);
         return data;
       } else {
         throw CustomError.CustomError(
@@ -108,7 +105,7 @@ export default class Products {
         );
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 
@@ -118,20 +115,18 @@ export default class Products {
         { _id: id },
         { $set: updatedFields }
       );
-      console.log(data);
       return data;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 
   deleteProduct = async (id) => {
     try {
       let data = await productsModel.deleteOne({ _id: id });
-      console.log(data);
       return data;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 }

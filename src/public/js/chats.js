@@ -20,7 +20,6 @@ fetch("/api/sessions/current")
 chatbox.addEventListener("keyup", (e) => {
   if (e.key === "Enter") {
     if (chatbox.value.trim().length > 0) {
-      console.log("USER", user);
       socket.emit("message", {
         email: user.payload.email,
         message: chatbox.value,

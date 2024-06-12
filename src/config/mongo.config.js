@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { enviroment } from "./config.js";
+import { logger } from "../utils/Logger.js";
 
 export default class MongoSingleton {
   static #instance;
@@ -8,9 +9,9 @@ export default class MongoSingleton {
     const connectMongoDB = async () => {
       try {
         await mongoose.connect(enviroment.mongoUrl);
-        console.log("Conectado con MongoDB");
+        logger.info("Conectado con MongoDB");
       } catch (error) {
-        console.log(error);
+        logger.error("Ocurrió un error al conectar MONGO DB", error);
         process.exit();
       }
     };
@@ -18,11 +19,11 @@ export default class MongoSingleton {
   }
   static getInstance() {
     if (this.#instance) {
-      console.log("Ya estás conectado");
+      logger.info("Ya estás conectado");
       return this.#instance;
     }
     this.#instance = new MongoSingleton();
-    console.log("Conectado a la base de datos");
+    logger.info("Conectado a la base de datos");
     return this.#instance;
   }
 }
