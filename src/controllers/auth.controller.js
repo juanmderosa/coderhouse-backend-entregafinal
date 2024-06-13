@@ -85,6 +85,42 @@ class AuthController {
       return done(error);
     }
   }
+
+  async setUserRole(req, res) {
+    const { uid } = req.params;
+    console.log(uid);
+    const user = await userService.findUserById(uid);
+    console.log(user);
+
+    if (user.role === "admin") {
+      return res
+        .status(400)
+        .json({
+          status: "error",
+          message: "Los admins no pueden cambiar su rol",
+        });
+    }
+
+    let newRole = null;
+    if (user.role === "premium") {
+      newRole = { role: "usuario" };
+    } else if (user.role === "usuario") {
+      newRole = { role: "premium" };
+    } else {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Rol no válido" });
+    }
+
+    try {
+      await userService.updateUser(user, newRole);
+      res.send({ status: "success", message: "Se ha actualizado el rol" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: "error", message: "Error actualizando el rol" });
+    }
+  }
 }
 
 export const authController = new AuthController();

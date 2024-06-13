@@ -59,6 +59,10 @@ class ProductController {
   async addProducts(req, res) {
     const newProduct = req.body;
 
+    if (!newProduct.owner) {
+      newProduct.owner = "admin";
+    }
+
     try {
       let validProps = [
         "title",

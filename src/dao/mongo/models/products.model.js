@@ -36,6 +36,11 @@ const schema = new Schema({
     type: Boolean,
     require: true,
   },
+  owner: {
+    default: "admin",
+    type: String,
+    ref: "Users",
+  },
 });
 schema.plugin(mongoosePaginate);
 export const productsModel = mongoose.model(collection, schema);

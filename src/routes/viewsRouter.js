@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth } from "../middlewares/auth.js";
-import { productRepository } from "../repositories/index.js";
+import { productRepository, usersRepository } from "../repositories/index.js";
 import { cartRepository } from "../repositories/index.js";
 import { messagesRepository } from "../repositories/index.js";
 
@@ -119,6 +119,11 @@ router.get("/profile", auth, (req, res) => {
 
 router.get("/restore", (req, res) => {
   res.render("restore");
+});
+
+router.get("/restorepass/:uid", async (req, res) => {
+  const { uid } = req.params;
+  res.render("restorepass", { userId: uid });
 });
 
 export default router;

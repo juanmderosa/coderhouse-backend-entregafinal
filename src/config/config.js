@@ -11,4 +11,10 @@ export const enviroment = {
   githubClientSecret: process.env.GITHUB_CLIENTSECRET,
   githubCallbackURL: process.env.GITHUB_CALLBACK,
   NODE_ENV: process.env.NODE_ENV,
+  mailing: {
+    PASSWORD: process.env.MAILING_PASSWORD,
+    SERVICE: process.env.MAILING_SERVICE,
+    HOST: process.env.MAILING_HOST,
+    USER: process.env.MAILING_USER,
+  },
 };

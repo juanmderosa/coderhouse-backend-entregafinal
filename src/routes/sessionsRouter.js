@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { createHash } from "../utils/utils.js";
+import { createHash, isValidPassword } from "../utils/utils.js";
 import passport from "passport";
 import { usersRepository } from "../repositories/index.js";
 import CurrentDTO from "../dao/DTOs/currentDTO.js";
+import MailingService from "../services/mail.service.js";
+import { enviroment } from "../config/config.js";
 const router = Router();
 
 //Registro de usuario
@@ -75,14 +77,54 @@ router.get("/logout", (req, res) => {
 
 //Restaurar contraseña
 router.post("/restore", async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) return;
+  const { email } = req.body;
+
+  if (!email) return;
 
   const user = await usersRepository.findUserByEmail(email);
+  console.log(user);
   if (!user)
     return res
       .status(400)
       .json({ status: "error", message: "No se encuentra el user" });
+
+  const mailer = new MailingService();
+  await mailer.sendMail({
+    from: "E-commerce Admin",
+    to: user.email,
+    subject: "Recuperá tu contraseña",
+    html: `<div><h1>¡Hacé click en el siguiente link para recuperar tu contraseña!</h1>
+        <a href="http://localhost:${enviroment.port}/restorepass/${user._id}"}>Restaurá tu contraseña haciendo click aquí</a>
+            </div>`,
+  });
+  res.send({ status: "success", message: "E-mail sended" });
+});
+
+router.post("/:uid/restorepass", async (req, res) => {
+  const { password } = req.body;
+  const { uid } = req.params;
+
+  if (!password) {
+    return res
+      .status(400)
+      .json({ status: "error", message: "Password requerido" });
+  }
+
+  const user = await usersRepository.findUserById(uid);
+  if (!user) {
+    return res
+      .status(400)
+      .json({ status: "error", message: "No se encuentra el usuario" });
+  }
+
+  const passwordMatch = isValidPassword(user, password);
+  if (passwordMatch) {
+    return res.status(400).json({
+      status: "error",
+      message: "La nueva contraseña no puede ser igual a la antigua",
+    });
+  }
+
   const newPass = createHash(password);
   const passwordToUpdate = { password: newPass };
 
