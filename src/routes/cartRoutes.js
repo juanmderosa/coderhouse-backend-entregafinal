@@ -9,7 +9,7 @@ cartRouter.post("/", cartController.createCart);
 cartRouter.get("/:cid", cartController.getProductsByCartId);
 cartRouter.post(
   "/:cid/product/:pid",
-  authorization("usuario"),
+  authorization(["usuario", "premium"]),
   cartController.addProductsToCart
 );
 cartRouter.delete("/:cid", cartController.deleteCart);

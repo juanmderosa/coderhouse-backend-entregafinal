@@ -7,7 +7,11 @@ export const productRouter = Router();
 productRouter.get("/", productController.getProducts);
 productRouter.get("/:pid", productController.getProductsById);
 productRouter.get("/code/:code", productController.getProductsByCode);
-productRouter.post("/", authorization("admin"), productController.addProducts);
+productRouter.post(
+  "/",
+  authorization(["admin", "premium"]),
+  productController.addProducts
+);
 productRouter.put(
   "/:pid",
   authorization("admin"),
@@ -15,6 +19,6 @@ productRouter.put(
 );
 productRouter.delete(
   "/:pid",
-  authorization("admin"),
+  authorization(["premium", "admin"]),
   productController.deleteProduct
 );

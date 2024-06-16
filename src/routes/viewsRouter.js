@@ -3,6 +3,7 @@ import { auth } from "../middlewares/auth.js";
 import { productRepository, usersRepository } from "../repositories/index.js";
 import { cartRepository } from "../repositories/index.js";
 import { messagesRepository } from "../repositories/index.js";
+import { validateToken } from "../utils/jwt.js";
 
 const router = Router();
 
@@ -121,9 +122,9 @@ router.get("/restore", (req, res) => {
   res.render("restore");
 });
 
-router.get("/restorepass/:uid", async (req, res) => {
-  const { uid } = req.params;
-  res.render("restorepass", { userId: uid });
+router.get("/restorepass/:token", async (req, res) => {
+  const { token } = req.params;
+  res.render("restorepass", { userId: token });
 });
 
 export default router;

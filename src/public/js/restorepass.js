@@ -5,8 +5,7 @@ const userId = document.getElementById("restoreUserId");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  console.log(passwordInput.value);
-  fetch(`/api/sessions/${userId.value}/restorepass`, {
+  fetch(`/api/sessions/restorepass/${userId.value}`, {
     method: "POST",
     body: JSON.stringify({
       password: passwordInput.value,
@@ -16,9 +15,9 @@ form.addEventListener("submit", (e) => {
     },
   }).then((response) => {
     if (response.status === 200) {
-      console.log("exito");
-      window.location.replace("/");
+      window.location.replace("/login");
     } else {
+      window.location.replace("/restore");
       console.log("algo salio mal");
     }
   });

@@ -4,3 +4,8 @@
 {"level":"error","message":"Producto no encontrado"}
 {"level":"error","message":"Producto no encontrado"}
 {"level":"error","message":"Producto no encontrado"}
+{"level":"error","message":"El usuario adminCoder@coder.com no tiene el rol premium para crear un nuevo producto"}
+{"level":"error","message":"El usuario adminCoder@coder.com no tiene el rol premium para crear un nuevo producto"}
+{"level":"error","message":"El usuario juanmderosa@gmail.com no tiene el rol premium para eliminar un nuevo producto"}
+{"level":"error","message":"No se pudieron agregar los productos al carrito Product already exists in cart","stack":"Error: Product already exists in cart\n    at Carts.addProductsToCart (file:///C:/Users/juanm/Desktop/backend/coderhouse-backend-entregafinal/src/dao/mongo/classes/carts.dao.js:28:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async CartRepository.addProductsToCart (file:///C:/Users/juanm/Desktop/backend/coderhouse-backend-entregafinal/src/repositories/carts.repositories.js:15:12)\n    at async CartService.addProductsToCart (file:///C:/Users/juanm/Desktop/backend/coderhouse-backend-entregafinal/src/services/carts.service.js:13:12)\n    at async addProductsToCart (file:///C:/Users/juanm/Desktop/backend/coderhouse-backend-entregafinal/src/controllers/carts.controller.js:53:27)"}
+{"level":"error","message":"El usuario es el propietario del producto"}

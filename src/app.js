@@ -17,6 +17,7 @@ import { initializeChatSocket } from "./sockets/chatSocket.js";
 import mockingRouter from "./routes/mockingRoutes.js";
 import { addLogger, logger } from "./utils/Logger.js";
 import userRouter from "./routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 
 //Creación de servidor con express
 const app = express();
@@ -50,6 +51,7 @@ app.use(viewRouter);
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser());
 app.use(addLogger);
 
 //Listen
