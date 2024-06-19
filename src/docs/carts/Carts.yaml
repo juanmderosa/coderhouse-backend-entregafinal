@@ -188,18 +188,14 @@ components:
       example:
         quantity: 2
     updateCartWithProducts:
-      type: object
-      properties:
-        products:
-          type: array
-          items:
-            type: object
-            properties:
-              product:
-                type: string
-              quantity:
-                type: number
+      type: array
+      items:
+        type: object
+        properties:
+          product:
+            type: string
+          quantity:
+            type: number
       example:
-        products:
-          - product: fdafdablfdaojk35735nfd
-            quantity: 2
+        - product: fdafdablfdaojk35735nfd
+          quantity: 2
