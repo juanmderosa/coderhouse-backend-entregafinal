@@ -16,6 +16,8 @@ import MongoSingleton from "./config/mongo.config.js";
 import { initializeChatSocket } from "./sockets/chatSocket.js";
 import mockingRouter from "./routes/mockingRoutes.js";
 import { addLogger, logger } from "./utils/Logger.js";
+import userRouter from "./routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 
 //Creación de servidor con express
 const app = express();
@@ -49,6 +51,7 @@ app.use(viewRouter);
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser());
 app.use(addLogger);
 
 //Listen
@@ -64,6 +67,7 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/users", userRouter);
 app.use("/api/mockingproducts", mockingRouter);
 
 //Inicializar Sockets

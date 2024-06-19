@@ -6,7 +6,7 @@ export const messageRouter = Router();
 
 messageRouter.post(
   "/",
-  authorization("usuario"),
+  authorization(["usuario", "premium"]),
   messagesController.createMessage
 );
 messageRouter.get("/", messagesController.getMessages);

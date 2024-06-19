@@ -1,4 +1,5 @@
 import { productService } from "../services/products.service.js";
+import { userService } from "../services/auth.service.js";
 import { logger } from "../utils/Logger.js";
 
 class ProductController {
@@ -58,6 +59,17 @@ class ProductController {
 
   async addProducts(req, res) {
     const newProduct = req.body;
+
+    const user = req.session.user;
+    if (user.role !== "premium") {
+      req.logger.error(
+        `El usuario ${user.email} no tiene el rol premium para crear un nuevo producto`
+      );
+      res
+        .status(403)
+        .send({ error: "No tienes permisos para realizar esta operación" });
+      return;
+    }
 
     try {
       let validProps = [
@@ -132,6 +144,19 @@ class ProductController {
   async deleteProduct(req, res) {
     const productId = req.params.pid;
     try {
+      const user = req.session.user;
+      const product = await productService.getProductsById(productId);
+      const isOwner = user.email === product.owner;
+      if (!isOwner) {
+        req.logger.error(
+          `El usuario ${user.email} no tiene el rol premium para eliminar un nuevo producto`
+        );
+        res
+          .status(403)
+          .send({ error: "No tienes permisos para realizar esta operación" });
+        return;
+      }
+
       await productService.deleteProduct(productId);
       req.logger.debug("Se eliminó el producto correctamente");
       res.json({ status: "success" });

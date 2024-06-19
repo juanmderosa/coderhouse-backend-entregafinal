@@ -93,6 +93,9 @@ export default class Products {
         product.code &&
         product.stock
       ) {
+        if (!product.owner) {
+          product.owner = "admin";
+        }
         product.status = product.status || true;
         let data = await productsModel.create(product);
         return data;

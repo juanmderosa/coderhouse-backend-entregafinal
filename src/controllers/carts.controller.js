@@ -1,4 +1,5 @@
 import { cartService } from "../services/carts.service.js";
+import { productService } from "../services/products.service.js";
 
 class CartManager {
   //Crear un nuevo carrito
@@ -35,6 +36,17 @@ class CartManager {
   async addProductsToCart(req, res) {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
+    const user = req.session.user;
+
+    const product = await productService.getProductsById(pid);
+    if (product.owner === user.email) {
+      req.logger.error("El usuario es el propietario del producto");
+      res
+        .status(403)
+        .send({ error: "El usuario es el propietario del producto" });
+      return;
+    }
+
     try {
       const updatedCart = await cartService.addProductsToCart(
         cid,

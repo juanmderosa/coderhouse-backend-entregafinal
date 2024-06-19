@@ -14,13 +14,9 @@ export const authorization = (role) => {
     }
 
     const userRole = req.user.role;
-    if (userRole === role) {
-      next();
-    } else {
-      return res.status(403).json({
-        status: "error",
-        message: "You are not authorized to do this action",
-      });
-    }
+
+    if (!role.includes(userRole))
+      return res.status(403).send({ status: "error", error: "Not authorized" });
+    next();
   };
 };

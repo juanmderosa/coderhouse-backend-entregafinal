@@ -4,8 +4,18 @@ import GitHubStrategy from "passport-github2";
 import { enviroment } from "./config.js";
 import { userService } from "../services/auth.service.js";
 import { authController } from "../controllers/auth.controller.js";
+import jwt, { ExtractJwt } from "passport-jwt";
 
 const LocalStrategy = local.Strategy;
+const JWTStrategy = jwt.Strategy;
+
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies[enviroment.jwt.COOKIE];
+  }
+  return token;
+};
 
 const initializePassport = () => {
   //Registrar ususario loclamente
@@ -41,6 +51,23 @@ const initializePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         authController.githubAuth(accessToken, refreshToken, profile, done);
+      }
+    )
+  );
+
+  passport.use(
+    "current",
+    new JWTStrategy(
+      {
+        jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: enviroment.jwt.SECRET,
+      },
+      async (jwt_payload, done) => {
+        try {
+          return done(null, jwt_payload);
+        } catch (error) {
+          return done(error);
+        }
       }
     )
   );
