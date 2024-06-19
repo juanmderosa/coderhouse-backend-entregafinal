@@ -8,7 +8,7 @@ class CartManager {
       const cart = await cartService.createCart();
       req.logger.debug("Carrito creado", cart);
 
-      res.json({ status: "success", cart });
+      res.status(201).json({ status: "success", cart });
     } catch (error) {
       req.logger.error("No se pudo crear el carrito", error);
       res.status(500).json({ error: error.message });
@@ -22,13 +22,13 @@ class CartManager {
     req.logger.debug("Listado de producto en carrito", cart);
 
     try {
-      res.json(cart.products);
+      res.status(200).json(cart.products);
     } catch (error) {
       req.logger.error(
         "No se pudieron obtener los productos del carrito",
         error
       );
-      res.status(500).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   }
 
@@ -55,7 +55,7 @@ class CartManager {
       );
       req.logger.debug("Se han agregado productos al carrito", updatedCart);
 
-      res.json({ status: "success", cart: updatedCart });
+      res.status(200).json({ status: "success", cart: updatedCart });
     } catch (error) {
       req.logger.error(
         "No se pudieron agregar los productos al carrito",
@@ -71,7 +71,7 @@ class CartManager {
     try {
       const updatedCart = await cartService.deleteCart(cid);
       req.logger.debug("Se ha eliminado el carrito", updatedCart);
-      res.json({ status: "success", cart: updatedCart });
+      res.status(200).json({ status: "success", cart: updatedCart });
     } catch (error) {
       req.logger.error("No se pudo eliminar el carrito", error);
       res.status(500).json({ error: error.message });
@@ -89,7 +89,7 @@ class CartManager {
         updatedCart
       );
 
-      res.json({ status: "success", cart: updatedCart });
+      res.status(200).json({ status: "success", cart: updatedCart });
     } catch (error) {
       req.logger.error(
         "No se pudieron eliminar los productos del carrito",
@@ -112,7 +112,7 @@ class CartManager {
       );
 
       req.logger.debug("Se actualizó la cantidad del carrito", updatedCart);
-      res.json({ status: "success", cart: updatedCart });
+      res.status(200).json({ status: "success", cart: updatedCart });
     } catch (error) {
       req.logger.error("No se pudo actualizar la cantidad del carrito", error);
       res.status(500).json({ error: error.message });
@@ -131,7 +131,7 @@ class CartManager {
       );
 
       req.logger.debug("Se actualizó el carrito", updatedCart);
-      res.json({ status: "success", cart: updatedCart });
+      res.status(200).json({ status: "success", cart: updatedCart });
     } catch (error) {
       req.logger.error("No se pudo actualizar el carrito", error);
       res.status(500).json({ error: error.message });

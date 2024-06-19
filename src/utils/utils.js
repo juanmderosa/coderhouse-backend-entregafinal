@@ -3,7 +3,7 @@ import { dirname } from "path";
 import bcrypt from "bcrypt";
 
 const __fielname = fileURLToPath(import.meta.url);
-const __dirname = dirname(__fielname);
+export const __dirname = dirname(__fielname);
 const rootDir = dirname(__dirname); // Sube un nivel desde `utils`
 
 export const createHash = (password) =>

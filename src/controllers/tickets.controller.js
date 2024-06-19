@@ -57,7 +57,7 @@ class TicketsManager {
     }
   }
 
-  // Obtener todos los mensajes
+  // Obtener todos un ticket por Id
   async getTicketById(req, res) {
     const { cid } = req.params;
     try {

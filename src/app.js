@@ -18,6 +18,8 @@ import mockingRouter from "./routes/mockingRoutes.js";
 import { addLogger, logger } from "./utils/Logger.js";
 import userRouter from "./routes/userRoutes.js";
 import cookieParser from "cookie-parser";
+import { swaggerSpecs } from "./utils/swaggerConfig.js";
+import swaggerUiExpress from "swagger-ui-express";
 
 //Creación de servidor con express
 const app = express();
@@ -53,6 +55,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
 app.use(addLogger);
+
+//Swagger
+//Route Docs
+app.use(
+  "/apidocs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup(swaggerSpecs, {
+    customCss: ".swagger-ui .topbar { display: none }",
+  })
+);
 
 //Listen
 const server = app.listen(enviroment.port, () => {
