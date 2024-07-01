@@ -7,16 +7,16 @@ export const cartRouter = Router();
 
 cartRouter.post("/", cartController.createCart);
 cartRouter.get("/:cid", cartController.getProductsByCartId);
+cartRouter.put("/:cid", cartController.updateCartWithProducts);
+cartRouter.delete("/:cid", cartController.deleteCart);
 cartRouter.post(
-  "/:cid/product/:pid",
+  "/:cid/products/:pid",
   authorization(["usuario", "premium"]),
   cartController.addProductsToCart
 );
-cartRouter.delete("/:cid", cartController.deleteCart);
 cartRouter.delete("/:cid/products/:pid", cartController.deleteProductsFromCart);
 cartRouter.put(
   "/:cid/products/:pid",
   cartController.editProductQuantityFromCart
 );
-cartRouter.put("/:cid", cartController.updateCartWithProducts);
 cartRouter.post("/:cid/purchase", ticketsController.createTicket);

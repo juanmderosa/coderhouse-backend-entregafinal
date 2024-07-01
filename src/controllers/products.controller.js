@@ -1,6 +1,4 @@
 import { productService } from "../services/products.service.js";
-import { userService } from "../services/auth.service.js";
-import { logger } from "../utils/Logger.js";
 
 class ProductController {
   async getProducts(req, res) {
@@ -18,7 +16,7 @@ class ProductController {
       );
 
       req.logger.debug(response);
-      res.json(response);
+      res.status(200).json(response);
     } catch (error) {
       req.logger.error("No se pudo obtener el listado de produtos", error);
       res.status(500).json({ error: "Internal Server Error" });
@@ -47,7 +45,7 @@ class ProductController {
       const product = await productService.getProductsByCode(code);
       if (!product) {
         req.logger.error("Producto no encontrado");
-        return res.send({ error: "Producto no encontrado" });
+        return res.status(400).send({ error: "Producto no encontrado" });
       }
       req.logger.debug(product);
       res.status(200).json(product);
@@ -118,7 +116,7 @@ class ProductController {
 
       await productService.addProducts(newProduct);
       req.logger.info("El producto se creó correctamente", newProduct);
-      res.json({ status: "success", newProduct });
+      res.status(201).json({ status: "success", newProduct });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -134,7 +132,7 @@ class ProductController {
       );
       req.logger.debug("Se editó el producto correctamente", updatedProduct);
 
-      res.json({ status: "success", updatedProduct });
+      res.status(200).json({ status: "success", updatedProduct });
     } catch (error) {
       req.logger.error("No se pudo editar el producto", error);
       res.status(400).json({ error: error.message });
@@ -159,7 +157,7 @@ class ProductController {
 
       await productService.deleteProduct(productId);
       req.logger.debug("Se eliminó el producto correctamente");
-      res.json({ status: "success" });
+      res.status(200).json({ status: "success" });
     } catch (error) {
       req.logger.error("No se pudo eliminar el producto", error);
       res.status(400).json({ error: error.message });
