@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production nodemon ./src/app.js",
-    "dev": "cross-env NODE_ENV=development nodemon ./src/app.js"
+    "dev": "cross-env NODE_ENV=development nodemon ./src/app.js",
+    "products_test": "mocha tests/products.test.js"
   },
   "author": "Juan Martín De Rosa",
   "license": "ISC",
@@ -15,8 +16,11 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/swagger-jsdoc": "^6.0.4",
+    "chai": "^5.1.1",
     "cross-env": "^7.0.3",
-    "nodemon": "^3.0.3"
+    "mocha": "^10.5.2",
+    "nodemon": "^3.0.3",
+    "supertest": "^7.0.0"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -35,7 +39,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "socket.io": "^4.7.5",
-    "swagger": "^0.7.5",
+    "swagger": "^0.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.13.0"
