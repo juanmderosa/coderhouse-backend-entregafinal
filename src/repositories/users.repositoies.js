@@ -18,4 +18,8 @@ export default class UsersRepository {
   updateUser = async (user, dataToUpdate) => {
     return this.dao.updateUser(user, dataToUpdate);
   };
+
+  deleteUser = async (id) => {
+    return this.dao.deleteUser(id);
+  };
 }

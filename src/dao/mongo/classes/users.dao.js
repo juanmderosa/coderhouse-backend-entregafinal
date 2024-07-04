@@ -23,4 +23,9 @@ export default class Users {
     );
     return updatedUser;
   };
+
+  deleteUser = async (id) => {
+    let deletedUser = await userModel.deleteOne({ _id: id });
+    return deletedUser;
+  };
 }

@@ -203,6 +203,19 @@ class AuthController {
       payload: currentUser,
     });
   }
+
+  async deleteUser(req, res) {
+    const { uid } = req.params;
+    const user = await usersRepository.findUserById(uid);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "No se encuentra el usuario" });
+    }
+
+    await usersRepository.deleteUser(user);
+    res.status(200).json({ status: "success", message: "Usuario eliminado" });
+  }
 }
 
 export const authController = new AuthController();

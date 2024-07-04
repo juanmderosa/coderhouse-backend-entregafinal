@@ -9,7 +9,13 @@ router.post(
   "/register",
   passport.authenticate("register", { failureRedirect: "/failregister" }),
   async (req, res) => {
-    res.status(201).json({ status: "success", message: "Usuario registrado" });
+    res
+      .status(201)
+      .json({
+        status: "success",
+        message: "Usuario registrado",
+        payload: req.user,
+      });
   }
 );
 
