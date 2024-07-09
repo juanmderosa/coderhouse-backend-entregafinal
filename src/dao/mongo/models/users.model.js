@@ -13,6 +13,15 @@ const schema = new mongoose.Schema({
     enum: ["usuario", "admin", "premium"],
     default: "usuario",
   },
+  documents: [
+    {
+      name: String,
+      reference: String,
+    },
+  ],
+  last_connection: {
+    type: Date,
+  },
 });
 
 const userModel = mongoose.model(collection, schema);

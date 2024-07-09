@@ -23,4 +23,9 @@ export default class Users {
     );
     return updatedUser;
   };
+
+  uploadFile = async (file) => {
+    const newFile = await userModel.create(file);
+    return newFile;
+  };
 }

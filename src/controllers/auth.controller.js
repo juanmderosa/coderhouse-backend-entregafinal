@@ -1,7 +1,7 @@
 import { enviroment } from "../config/config.js";
 import CurrentDTO from "../dao/DTOs/currentDTO.js";
 import { usersRepository } from "../repositories/index.js";
-import { userService } from "../services/auth.service.js";
+import { userService } from "../services/users.service.js";
 import MailingService from "../services/mail.service.js";
 import { generateToken, validateToken } from "../utils/jwt.js";
 import { logger } from "../utils/Logger.js";
@@ -58,8 +58,12 @@ class AuthController {
       }
       const valid = isValidPassword(user, password);
       if (!valid) return done(null, false);
+      const last_connection = new Date().toString();
+      await userService.updateUser(user, {
+        last_connection: last_connection,
+      });
 
-      return done(null, user);
+      return done(null, user, last_connection);
     } catch (error) {
       logger.error("Usuario no encontrado", error);
       return done(error);
@@ -91,36 +95,25 @@ class AuthController {
     }
   }
 
-  async setUserRole(req, res) {
-    const { uid } = req.params;
-    const user = await userService.findUserById(uid);
+  async logoutUser(req, res) {
+    const user = req.user;
+    req.session.destroy(async (err) => {
+      if (!err) {
+        const last_connection = new Date().toString();
+        await userService.updateUser(user, {
+          last_connection: last_connection,
+        });
 
-    if (user.role === "admin") {
-      return res.status(400).json({
-        status: "error",
-        message: "Los admins no pueden cambiar su rol",
-      });
-    }
-
-    let newRole = null;
-    if (user.role === "premium") {
-      newRole = { role: "usuario" };
-    } else if (user.role === "usuario") {
-      newRole = { role: "premium" };
-    } else {
-      return res
-        .status(400)
-        .json({ status: "error", message: "Rol no válido" });
-    }
-
-    try {
-      await userService.updateUser(user, newRole);
-      res.send({ status: "success", message: "Se ha actualizado el rol" });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error", message: "Error actualizando el rol" });
-    }
+        await userService.findUserById(user._id);
+        res.status(200).json({
+          status: "success",
+          message: "Sesión cerrada",
+          last_connection,
+        });
+      } else {
+        res.status(500).json({ error: err });
+      }
+    });
   }
 
   async sendEmailToRestorePassword(req, res) {

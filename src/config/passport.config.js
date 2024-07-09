@@ -2,7 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import GitHubStrategy from "passport-github2";
 import { enviroment } from "./config.js";
-import { userService } from "../services/auth.service.js";
+import { userService } from "../services/users.service.js";
 import { authController } from "../controllers/auth.controller.js";
 import jwt, { ExtractJwt } from "passport-jwt";
 

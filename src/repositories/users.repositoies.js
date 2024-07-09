@@ -18,4 +18,8 @@ export default class UsersRepository {
   updateUser = async (user, dataToUpdate) => {
     return this.dao.updateUser(user, dataToUpdate);
   };
+
+  uploadFile = async (file) => {
+    return this.dao.uploadFile(file);
+  };
 }
