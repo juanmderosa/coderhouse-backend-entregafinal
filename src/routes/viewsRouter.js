@@ -3,7 +3,6 @@ import { auth } from "../middlewares/auth.js";
 import { productRepository, usersRepository } from "../repositories/index.js";
 import { cartRepository } from "../repositories/index.js";
 import { messagesRepository } from "../repositories/index.js";
-import { validateToken } from "../utils/jwt.js";
 
 const router = Router();
 

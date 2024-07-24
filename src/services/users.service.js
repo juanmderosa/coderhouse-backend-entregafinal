@@ -16,6 +16,10 @@ class usersService {
   updateUser = async (user, dataToUpdate) => {
     return await usersRepository.updateUser(user, dataToUpdate);
   };
+
+  uploadFile = async (file) => {
+    return await usersRepository.uploadFile(file);
+  };
 }
 
 export const userService = new usersService();

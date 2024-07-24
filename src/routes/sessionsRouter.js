@@ -62,15 +62,7 @@ router.get(
 );
 
 //Logout
-router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (!err) {
-      res.status(200).json({ status: "success", message: "Sesión cerrada" });
-    } else {
-      res.status(500).json({ error: err });
-    }
-  });
-});
+router.get("/logout", authController.logoutUser);
 
 //Enviar e-mail para restaurar la contraseña
 router.post("/restore", authController.sendEmailToRestorePassword);
