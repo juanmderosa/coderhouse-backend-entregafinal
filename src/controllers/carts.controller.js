@@ -7,7 +7,6 @@ class CartManager {
     try {
       const cart = await cartService.createCart();
       req.logger.debug("Carrito creado", cart);
-
       res.status(201).json({ status: "success", cart });
     } catch (error) {
       req.logger.error("No se pudo crear el carrito", error);

@@ -1,8 +1,6 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import rootDir, { __dirname } from "../utils/utils.js";
 
-//Config de documentación
-
 const swaggerOptions = {
   definition: {
     openapi: "3.0.1",
@@ -14,7 +12,5 @@ const swaggerOptions = {
   },
   apis: [`${rootDir}/docs/**/*.yaml`],
 };
-
-console.log(swaggerOptions.apis[0]);
 
 export const swaggerSpecs = swaggerJsdoc(swaggerOptions);

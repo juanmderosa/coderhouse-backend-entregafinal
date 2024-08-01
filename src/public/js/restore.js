@@ -15,7 +15,7 @@ form.addEventListener("submit", (e) => {
     if (response.status === 200) {
       window.location.replace("/");
     } else {
-      console.log("algo salio mal");
+      console.error("algo salio mal");
     }
   });
 });

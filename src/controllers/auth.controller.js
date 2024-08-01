@@ -6,6 +6,7 @@ import MailingService from "../services/mail.service.js";
 import { generateToken, validateToken } from "../utils/jwt.js";
 import { logger } from "../utils/Logger.js";
 import { createHash, isValidPassword } from "../utils/utils.js";
+import moment from "moment";
 
 class AuthController {
   async registerUser(req, username, password, done) {
@@ -39,7 +40,6 @@ class AuthController {
   async loginUser(username, password, done) {
     try {
       if (username === "adminCoder@coder.com" && password === "adminCod3r123") {
-        // Si las credenciales coinciden con el administrador predefinido creo un objeto con el los datos del administrador.
         const adminUser = {
           first_name: "Admin",
           last_name: "Coder",
@@ -73,7 +73,6 @@ class AuthController {
   async githubAuth(accessToken, refreshToken, profile, done) {
     try {
       const user = await userService.findUserByEmail(profile._json.email);
-      //si no existe lo creamos
       if (!user) {
         const newUser = {
           first_name: profile._json.name,
@@ -83,7 +82,6 @@ class AuthController {
           password: "",
           role: "usuario",
         };
-        //guardamos el usuario en la database
         let createdUser = await userService.createUser(newUser);
         done(null, createdUser);
       } else {
@@ -99,7 +97,7 @@ class AuthController {
     const user = req.user;
     req.session.destroy(async (err) => {
       if (!err) {
-        const last_connection = new Date().toString();
+        const last_connection = moment();
         await userService.updateUser(user, {
           last_connection: last_connection,
         });

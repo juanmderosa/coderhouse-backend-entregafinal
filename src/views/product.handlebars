@@ -7,8 +7,19 @@
       <p>Precio: ${{this.price}}</p>
       <p>Descripción: {{this.description}}</p>
       <p>Stock: {{this.stock}}</p>
-      <button>Agregar al Carrito</button>
+      <label for="quantity">Cantidad</label>
+      <input
+        name="quantity"
+        type="number"
+        class="quantityInput"
+        data-id="{{this._id}}"
+        min="1"
+        value="1"
+      />
+      <button class="addToCart" data-id={{this._id}}>Agregar al Carrito</button>
 
     </li>
   </ul>
 </div>
+
+<script src="/js/addToCart.js"></script>

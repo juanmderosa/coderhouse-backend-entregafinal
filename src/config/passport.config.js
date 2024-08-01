@@ -45,9 +45,9 @@ const initializePassport = () => {
     "github",
     new GitHubStrategy(
       {
-        clientID: enviroment.githubClientID, //id de la app en github
-        clientSecret: enviroment.githubClientSecret, //clave secreta de github
-        callbackURL: enviroment.githubCallbackURL, //url callback de github
+        clientID: enviroment.githubClientID,
+        clientSecret: enviroment.githubClientSecret,
+        callbackURL: enviroment.githubCallbackURL,
       },
       async (accessToken, refreshToken, profile, done) => {
         authController.githubAuth(accessToken, refreshToken, profile, done);
@@ -74,10 +74,8 @@ const initializePassport = () => {
 
   passport.serializeUser((user, done) => {
     if (user._id) {
-      // Si el usuario tiene un _id, lo serializamos normalmente
       done(null, user._id);
     } else {
-      // Si es un usuario administrador predefinido, serializamos con un identificador "admin" para que tenga un identificador único
       done(null, "admin");
     }
   });
@@ -85,13 +83,12 @@ const initializePassport = () => {
   passport.deserializeUser(async (id, done) => {
     try {
       if (id === "admin") {
-        // Si coincide con el usuario "admin" creamos un objeto para con los datos del admin
         const adminUser = {
           first_name: "Admin",
           last_name: "Coder",
           email: "adminCoder@coder.com",
-          age: 30, // Puedes establecer la edad predeterminada del administrador
-          role: "admin", // Asignar el rol de administrador
+          age: 30,
+          role: "admin",
         };
         done(null, adminUser);
       } else {

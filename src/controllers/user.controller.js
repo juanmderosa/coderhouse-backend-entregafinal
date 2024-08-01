@@ -1,7 +1,15 @@
-import { usersRepository } from "../repositories/index.js";
+import UserDTO from "../dao/DTOs/userDTO.js";
+import userModel from "../dao/mongo/models/users.model.js";
+import MailingService from "../services/mail.service.js";
 import { userService } from "../services/users.service.js";
 
 class UserController {
+  async getAllUsers(req, res) {
+    const users = await userService.getAllUsers();
+    const userDTOs = users.map((user) => new UserDTO(user));
+    res.status(200).send({ status: "success", payload: userDTOs });
+  }
+
   async setUserRole(req, res) {
     const { uid } = req.params;
     const user = await userService.findUserById(uid);
@@ -51,6 +59,64 @@ class UserController {
     }
   }
 
+  async deleteUser(req, res) {
+    const { uid } = req.params;
+    try {
+      await userService.deleteUser(uid);
+      res.send({ status: "success", message: "Se ha eliminado el usuario" });
+    } catch (error) {
+      res
+        .status(500)
+        .send({ status: "error", message: "Error eliminando el usuario" });
+    }
+  }
+
+  async deleteUsersWithoutActivity(req, res) {
+    const time = new Date();
+    time.setDate(time.getDate() - 2);
+
+    try {
+      const usersToBeDeleted = await userModel.find({
+        $or: [
+          { last_connection: { $lt: time.toString() } },
+          { last_connection: { $exists: false } },
+        ],
+      });
+
+      if (usersToBeDeleted.length === 0) {
+        return res.status(200).send({
+          status: "success",
+          message: "No hay usuarios inactivos para eliminar.",
+        });
+      }
+
+      const mailer = new MailingService();
+      for (const user of usersToBeDeleted) {
+        await mailer.sendMail({
+          from: "E-commerce Admin",
+          to: user.email,
+          subject: "Tu cuenta ha sido eliminada",
+          html: `<div><h1>¡Hemos eliminado tu cuenta por inactividad!</h1>
+            <a href="http://localhost:${process.env.PORT}/register">Si quieres volver a crear una cuenta puedes hacerlo desde aquí</a>
+                </div>`,
+        });
+      }
+
+      const result = await userService.deleteUsersWithoutActivity(time);
+
+      res.status(200).send({
+        status: "success",
+        message: `${result.deletedCount} usuarios eliminados por inactividad.`,
+        deletedCount: result.deletedCount,
+      });
+    } catch (error) {
+      res.status(500).send({
+        status: "error",
+        message: "Error eliminando los usuarios",
+        error,
+      });
+    }
+  }
   async uploadFile(req, res) {
     const { uid } = req.params;
     const files = req.files;
