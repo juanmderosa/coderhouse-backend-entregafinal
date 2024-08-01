@@ -79,7 +79,7 @@ export default class Carts {
       if (productIndex === -1) {
         throw new Error("Product not found in cart");
       }
-      cart.products[productIndex].quantity = quantity;
+      cart.products[productIndex].quantity += quantity;
       await cart.save();
       return cart;
     } catch (error) {

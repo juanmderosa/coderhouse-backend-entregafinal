@@ -30,7 +30,7 @@ class TicketDTO {
     const deletedProducts = await Promise.all(
       products.map(async (prod) => {
         await cartService.deleteProductsFromCart(cid, prod.product._id);
-        return prod.product._id; // Retorna el ID del producto eliminado
+        return prod.product._id;
       })
     );
 

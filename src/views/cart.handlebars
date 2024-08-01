@@ -1,13 +1,19 @@
 <div>
-    <h1>Carrito</h1>
-    {{#each response.products}}
-        <ul>
-            <li style="list-style: none; margin-bottom: 10px; border: 1px solid; padding: 1rem">
-                <h2 style="text-align: center;">{{this.product.title}}</h2>
-                <p>Precio: ${{this.product.price}}</p>
-                <p>Cantidad: {{this.quantity}}</p>
-
-            </li>
-        </ul>
-    {{/each}}
+  <h2 style="text-align: center;">Carrito</h2>
+  {{#each products}}
+    <ul>
+      <li
+        style="list-style: none; margin-bottom: 10px; border: 1px solid; padding: 1rem"
+      >
+        <h2 style="text-align: center;">{{this.product.title}}</h2>
+        <p>Precio: ${{this.product.price}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
+        <button class="deleteFromCart" data-id={{this.product._id}}>Eliminar del
+          Carrito</button>
+      </li>
+    </ul>
+  {{/each}}
+  <button id="finalizarBtn">Finalizar compra</button>
 </div>
+
+<script src="/js/cart.js"></script>

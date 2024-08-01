@@ -3,6 +3,10 @@ export default class UsersRepository {
     this.dao = dao;
   }
 
+  getAllUsers = async () => {
+    return this.dao.getAllUsers();
+  };
+
   findUserByEmail = async (username) => {
     return this.dao.findUserByEmail(username);
   };
@@ -17,6 +21,14 @@ export default class UsersRepository {
 
   updateUser = async (user, dataToUpdate) => {
     return this.dao.updateUser(user, dataToUpdate);
+  };
+
+  deleteUser = async (id) => {
+    return this.dao.deleteUser(id);
+  };
+
+  deleteUsersWithoutActivity = async (time) => {
+    return this.dao.deleteUsersWithoutActivity(time);
   };
 
   uploadFile = async (file) => {

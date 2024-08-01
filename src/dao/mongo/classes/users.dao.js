@@ -1,6 +1,11 @@
 import userModel from "../models/users.model.js";
 
 export default class Users {
+  getAllUsers = async () => {
+    const users = await userModel.find();
+    return users;
+  };
+
   findUserByEmail = async (username) => {
     const user = await userModel.findOne({ email: username });
     return user;
@@ -22,6 +27,21 @@ export default class Users {
       { $set: dataToUpdate }
     );
     return updatedUser;
+  };
+
+  deleteUser = async (id) => {
+    let deletedUser = await userModel.deleteOne({ _id: id });
+    return deletedUser;
+  };
+
+  deleteUsersWithoutActivity = async (time) => {
+    const deletedUsers = await userModel.deleteMany({
+      $or: [
+        { last_connection: { $lt: time.toString() } },
+        { last_connection: { $exists: false } },
+      ],
+    });
+    return deletedUsers;
   };
 
   uploadFile = async (file) => {

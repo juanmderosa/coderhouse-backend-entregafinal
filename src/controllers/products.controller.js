@@ -1,4 +1,6 @@
+import MailingService from "../services/mail.service.js";
 import { productService } from "../services/products.service.js";
+import { userService } from "../services/users.service.js";
 
 class ProductController {
   async getProducts(req, res) {
@@ -141,18 +143,42 @@ class ProductController {
 
   async deleteProduct(req, res) {
     const productId = req.params.pid;
+    let owner;
     try {
       const user = req.session.user;
       const product = await productService.getProductsById(productId);
-      const isOwner = user.email === product.owner;
+
+      if (product.owner !== "adminCoder@coder.com") {
+        owner = await userService.findUserByEmail(product.owner);
+      }
+
+      const isOwner = user.role === "admin" || user.email === owner.email;
       if (!isOwner) {
         req.logger.error(
-          `El usuario ${user.email} no tiene el rol premium para eliminar un nuevo producto`
+          `El usuario ${user.email} no tiene el permiso para eliminar un producto`
         );
         res
           .status(403)
           .send({ error: "No tienes permisos para realizar esta operación" });
         return;
+      }
+
+      if (user.role !== "admin" && owner.role === "premium") {
+        const mailer = new MailingService();
+        await mailer.sendMail({
+          from: "E-commerce Admin",
+          to: owner.email,
+          subject: `Hemos eliminado tu producto ${product.title}`,
+          html: `<div><h1>¡Se ha eliminado un producto!</h1>
+                  <h2>Detalle</h2>
+                    <ul>
+                      <li>Título: ${product.title}</li>
+                      <li>Código: ${product.code}</li>
+                      <li>Descripción: ${product.description}</li>
+                      <li>Precio: ${product.price}</li>
+                    </ul>
+                  </div>`,
+        });
       }
 
       await productService.deleteProduct(productId);

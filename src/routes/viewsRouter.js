@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { auth } from "../middlewares/auth.js";
+import { adminViewAuth, auth } from "../middlewares/auth.js";
 import { productRepository, usersRepository } from "../repositories/index.js";
 import { cartRepository } from "../repositories/index.js";
 import { messagesRepository } from "../repositories/index.js";
+import { userService } from "../services/users.service.js";
+import UserDTO from "../dao/DTOs/userDTO.js";
+import { ticketsService } from "../services/tickets.service.js";
 
 const router = Router();
 
@@ -60,7 +63,7 @@ router.get("/carts/:cid", auth, async (req, res) => {
   const { cid } = req.params;
   try {
     const response = await cartRepository.getProductsByCartId(cid);
-    res.render("cart", response);
+    res.render("cart", { products: response.products });
   } catch (error) {
     req.logger.error(error);
     res.status(500).json({ error: error.message });
@@ -93,7 +96,7 @@ router.get("/realtimeproducts", auth, async (req, res) => {
   }
 });
 
-router.get("/chat", async (req, res) => {
+router.get("/chat", auth, async (req, res) => {
   try {
     const allMessages = await messagesRepository.getMessages();
     res.render("chat", allMessages);
@@ -124,6 +127,20 @@ router.get("/restore", (req, res) => {
 router.get("/restorepass/:token", async (req, res) => {
   const { token } = req.params;
   res.render("restorepass", { userId: token });
+});
+
+router.get("/users", adminViewAuth, async (req, res) => {
+  const users = await userService.getAllUsers();
+  const userDTOs = users.map((user) => new UserDTO(user));
+  res.render("users", { users: userDTOs });
+});
+
+router.get("/ticket/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const ticket = await ticketsService.getTicketById(id);
+  const ticketObject = ticket.toObject();
+
+  res.render("ticket", { ticket: ticketObject });
 });
 
 export default router;

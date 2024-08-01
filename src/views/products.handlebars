@@ -10,7 +10,9 @@
         <h2>{{this.title}}</h2>
         <p>${{this.price}}</p>
         <p>{{this.description}}</p>
-        <button>Agregar al Carrito</button>
+        <label for="quantity">Cantidad</label>
+        <input name="quantity" type="number" class="quantityInput" data-id="{{this._id}}" min="1" value="1"></input>
+        <button  class="addToCart" data-id={{this._id}}>Agregar al Carrito</button>
         <a href="/product/{{this._id}}">Ver Producto</a>
       </li>
     {{/each}}
@@ -27,3 +29,5 @@
     {{/if}}
   </div>
 </div>
+
+<script src="/js/addToCart.js"></script>

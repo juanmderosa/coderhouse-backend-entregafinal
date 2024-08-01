@@ -18,7 +18,7 @@ form.addEventListener("submit", (e) => {
       window.location.replace("/login");
     } else {
       window.location.replace("/restore");
-      console.log("algo salio mal");
+      console.error("algo salio mal");
     }
   });
 });
