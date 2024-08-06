@@ -133,7 +133,7 @@ class AuthController {
       to: user.email,
       subject: "Recuperá tu contraseña",
       html: `<div><h1>¡Hacé click en el siguiente link para recuperar tu contraseña!</h1>
-          <a href="http://localhost:${enviroment.port}/restorepass/${token}"}>Restaurá tu contraseña haciendo click aquí</a>
+          <a href="${enviroment.BASE_URL}/restorepass/${token}"}>Restaurá tu contraseña haciendo click aquí</a>
               </div>`,
     });
     res.send({ status: "success", message: "E-mail sended" });

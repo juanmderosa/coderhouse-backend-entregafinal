@@ -2,6 +2,7 @@ import { productsModel } from "../models/products.model.js";
 import { CustomError } from "../../../utils/customError.js";
 import { validateProduct } from "../../../utils/productsError.js";
 import { errorTypes } from "../../../utils/errorTypes.js";
+import { enviroment } from "../../../config/config.js";
 
 export default class Products {
   getProducts = async (page, limit, queryParam, sortParam) => {
@@ -33,7 +34,7 @@ export default class Products {
         sort,
       });
 
-      const baseUrl = `http://localhost:8080/?limit=${limitNumber}`;
+      const baseUrl = `${enviroment.BASE_URL}/?limit=${limitNumber}`;
 
       const totalPages = products.totalPages;
       const hasNextPage = products.hasNextPage;

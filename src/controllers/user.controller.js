@@ -1,3 +1,4 @@
+import { enviroment } from "../config/config.js";
 import UserDTO from "../dao/DTOs/userDTO.js";
 import userModel from "../dao/mongo/models/users.model.js";
 import MailingService from "../services/mail.service.js";
@@ -97,7 +98,7 @@ class UserController {
           to: user.email,
           subject: "Tu cuenta ha sido eliminada",
           html: `<div><h1>¡Hemos eliminado tu cuenta por inactividad!</h1>
-            <a href="http://localhost:${process.env.PORT}/register">Si quieres volver a crear una cuenta puedes hacerlo desde aquí</a>
+            <a href="${enviroment.BASE_URL}/register">Si quieres volver a crear una cuenta puedes hacerlo desde aquí</a>
                 </div>`,
         });
       }
